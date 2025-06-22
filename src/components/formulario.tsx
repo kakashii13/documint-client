@@ -11,6 +11,8 @@ import {
   Paper,
   FormControlLabel,
   Checkbox,
+  Backdrop,
+  Fade,
 } from "@mui/material";
 import schema from "../utils/validation";
 import { formFields } from "../utils/fields";
@@ -19,6 +21,7 @@ import DatePickerCustom from "./date-picker";
 import AdjuntarArchivos from "./adjuntar-archivo";
 import { useState } from "react";
 import { Firma } from "./signature";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -38,6 +41,8 @@ const isValidDateString = (value: any): boolean => {
 
 export default function FormularioDocumint() {
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
   const { control, handleSubmit } = useForm({
     defaultValues: {
       ...Object.fromEntries(
@@ -91,10 +96,15 @@ export default function FormularioDocumint() {
 
       if (!response.ok) throw new Error("Error al enviar el formulario");
 
-      const result = await response.json();
-      console.log("Formulario enviado correctamente", result);
+      await response.json();
+
       setLoading(false);
-      // control._reset();
+      setSuccess(true);
+
+      setTimeout(() => {
+        control._reset();
+        setSuccess(false);
+      }, 3000);
     } catch (error) {
       console.error("Error al enviar:", error);
     }
@@ -265,6 +275,24 @@ export default function FormularioDocumint() {
           </Button>
         </Box>
       </form>
+      <Backdrop
+        open={success}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Fade in={success} timeout={{ enter: 300, exit: 300 }}>
+          <Box
+            textAlign="center"
+            bgcolor={"background.paper"}
+            p={4}
+            borderRadius={2}
+          >
+            <CheckCircleIcon sx={{ fontSize: 80, color: "success.main" }} />
+            <Typography variant="h6" color="text.primary" mt={2}>
+              Formulario enviado con éxito
+            </Typography>
+          </Box>
+        </Fade>
+      </Backdrop>
     </Box>
   );
 }
