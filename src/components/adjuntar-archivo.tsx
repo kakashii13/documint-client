@@ -63,10 +63,16 @@ export default function AdjuntarArchivos({
             </Button>
 
             {value?.length > 0 && (
-              <List dense>
+              <List dense sx={{ mt: 2, maxHeight: 200, overflowY: "auto" }}>
                 {value.map((file: File, i: number) => (
                   <ListItem
                     key={i}
+                    sx={{
+                      borderBottom: "1px solid #ccc",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      padding: 1,
+                    }}
                     secondaryAction={
                       <IconButton edge="end" onClick={() => eliminarArchivo(i)}>
                         <DeleteIcon />

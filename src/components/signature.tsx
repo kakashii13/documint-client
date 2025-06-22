@@ -1,12 +1,13 @@
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
 interface FirmaProps {
   onFirmaChange: (dataUrl: string) => void;
+  removeOnClick?: () => void;
 }
 
-export const Firma = ({ onFirmaChange }: FirmaProps) => {
+export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
 
   const guardarFirma = () => {
@@ -17,7 +18,7 @@ export const Firma = ({ onFirmaChange }: FirmaProps) => {
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <SignatureCanvas
         ref={sigCanvasRef}
         penColor="black"
@@ -31,9 +32,23 @@ export const Firma = ({ onFirmaChange }: FirmaProps) => {
           },
         }}
       />
-      <Button onClick={guardarFirma} sx={{ mt: 2 }} variant="outlined">
+      <Button onClick={guardarFirma} variant="contained">
         Guardar firma
       </Button>
-    </>
+      <Button
+        onClick={() => {
+          if (sigCanvasRef.current) {
+            sigCanvasRef.current.clear();
+          }
+          if (removeOnClick) {
+            removeOnClick();
+          }
+        }}
+        variant="outlined"
+        color="primary"
+      >
+        Limpiar firma
+      </Button>
+    </Box>
   );
 };

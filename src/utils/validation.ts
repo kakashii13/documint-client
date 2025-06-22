@@ -112,6 +112,7 @@ const schema = yup.object().shape({
     otherwise: (schema) => schema.notRequired(),
   }),
   observaciones: yup.string().notRequired(),
+  firma: yup.string().required("La firma es requerida."),
   familiares: yup.array().of(
     yup.object().shape({
       parentesco: yup.string().nullable().notRequired(),

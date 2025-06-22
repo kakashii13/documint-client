@@ -218,7 +218,10 @@ export default function FormularioDocumint() {
               <Typography variant="subtitle1" gutterBottom>
                 Firma del solicitante
               </Typography>
-              <Firma onFirmaChange={(dataUrl) => field.onChange(dataUrl)} />
+              <Firma
+                onFirmaChange={(dataUrl) => field.onChange(dataUrl)}
+                removeOnClick={() => field.onChange("")}
+              />
 
               {field.value && (
                 <Box mt={2}>
@@ -250,7 +253,7 @@ export default function FormularioDocumint() {
             color="primary"
             onClick={() => control._reset()}
           >
-            Limpiar
+            Limpiar formulario
           </Button>
           <Button
             type="submit"
