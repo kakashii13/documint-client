@@ -42,8 +42,9 @@ const isValidDateString = (value: any): boolean => {
 export default function FormularioDocumint() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [deleteSignature, setDeleteSignature] = useState(false);
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       ...Object.fromEntries(
         formFields.map((f) => [f.name, f.type === "checkbox" ? false : ""])
@@ -58,6 +59,8 @@ export default function FormularioDocumint() {
   const onSubmit = async (data: any) => {
     try {
       setLoading(true);
+      setSuccess(false);
+      setDeleteSignature(false);
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
@@ -66,9 +69,12 @@ export default function FormularioDocumint() {
             Object.entries(item).forEach(([itemKey, itemValue]) => {
               const formatted =
                 itemValue instanceof Date || isValidDateString(itemValue)
-                  ? formatDateToDDMMYYYY(itemValue)
+                  ? formatDateToDDMMYYYY(itemValue as string | Date)
                   : itemValue;
-              formData.append(`${key}[${index}][${itemKey}]`, formatted ?? "");
+              formData.append(
+                `${key}[${index}][${itemKey}]`,
+                String(formatted ?? "")
+              );
             });
           });
         } else if (value instanceof FileList || value instanceof File) {
@@ -76,9 +82,9 @@ export default function FormularioDocumint() {
         } else {
           const formatted =
             value instanceof Date || isValidDateString(value)
-              ? formatDateToDDMMYYYY(value)
+              ? formatDateToDDMMYYYY(value as string | Date)
               : value;
-          formData.append(key, formatted ?? "");
+          formData.append(key, String(formatted ?? ""));
         }
       });
 
@@ -102,11 +108,13 @@ export default function FormularioDocumint() {
       setSuccess(true);
 
       setTimeout(() => {
-        control._reset();
+        setDeleteSignature(true);
+        reset();
         setSuccess(false);
       }, 3000);
     } catch (error) {
       console.error("Error al enviar:", error);
+      setLoading(false);
     }
   };
 
@@ -131,7 +139,7 @@ export default function FormularioDocumint() {
               required,
             }) => {
               const watchValue = dependsOn
-                ? useWatch({ control, name: dependsOn })
+                ? useWatch({ control, name: dependsOn as any })
                 : true;
               const isDisabled = dependsOn && !watchValue;
 
@@ -141,7 +149,7 @@ export default function FormularioDocumint() {
                   size={{ xs: xs || 12, sm: col || 6, md: col || 4 }}
                 >
                   <Controller
-                    name={name}
+                    name={name as any}
                     control={control}
                     render={({ field, fieldState }) =>
                       type === "select" ? (
@@ -150,7 +158,7 @@ export default function FormularioDocumint() {
                           select
                           label={label}
                           fullWidth
-                          disabled={isDisabled}
+                          disabled={Boolean(isDisabled)}
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}
                           required={required || false}
@@ -178,7 +186,7 @@ export default function FormularioDocumint() {
                           label={label}
                           fullWidth
                           multiline
-                          disabled={isDisabled}
+                          disabled={Boolean(isDisabled)}
                           rows={3}
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}
@@ -190,7 +198,7 @@ export default function FormularioDocumint() {
                           value={field.value}
                           onChange={field.onChange}
                           label={label}
-                          disabled={isDisabled}
+                          disabled={Boolean(isDisabled)}
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}
                           required={required || false}
@@ -200,7 +208,7 @@ export default function FormularioDocumint() {
                           {...field}
                           label={label}
                           type={type}
-                          disabled={isDisabled}
+                          disabled={Boolean(isDisabled)}
                           fullWidth
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}
@@ -230,7 +238,7 @@ export default function FormularioDocumint() {
               </Typography>
               <Firma
                 onFirmaChange={(dataUrl) => field.onChange(dataUrl)}
-                removeOnClick={() => field.onChange("")}
+                removeOnClick={deleteSignature}
               />
 
               {field.value && (
@@ -261,7 +269,9 @@ export default function FormularioDocumint() {
           <Button
             variant="outlined"
             color="primary"
-            onClick={() => control._reset()}
+            onClick={() => {
+              reset();
+            }}
           >
             Limpiar formulario
           </Button>
@@ -269,9 +279,10 @@ export default function FormularioDocumint() {
             type="submit"
             variant="contained"
             color="primary"
+            disabled={loading}
             loading={loading}
           >
-            Enviar
+            {loading ? "Enviando..." : "Enviar"}
           </Button>
         </Box>
       </form>

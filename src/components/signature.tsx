@@ -1,10 +1,10 @@
 import { Box, Button } from "@mui/material";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
 interface FirmaProps {
   onFirmaChange: (dataUrl: string) => void;
-  removeOnClick?: () => void;
+  removeOnClick?: boolean;
 }
 
 export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
@@ -16,6 +16,13 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
       onFirmaChange(dataUrl);
     }
   };
+
+  // Limpiar la firma
+  useEffect(() => {
+    if (removeOnClick && sigCanvasRef.current) {
+      sigCanvasRef.current.clear();
+    }
+  }, [removeOnClick]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -39,9 +46,6 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
         onClick={() => {
           if (sigCanvasRef.current) {
             sigCanvasRef.current.clear();
-          }
-          if (removeOnClick) {
-            removeOnClick();
           }
         }}
         variant="outlined"
