@@ -48,7 +48,7 @@ export default function FormularioDocumint() {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       ...Object.fromEntries(
-        formFields.map((f) => [f.name, f.type === "checkbox" ? false : ""])
+        formFields.map((f) => [f.name, f.type === "checkbox" ? null : ""])
       ),
       familiares: [
         { parentesco: "", nombre: "", edad: "", cuil: "", fechaNac: "" },
@@ -194,6 +194,11 @@ export default function FormularioDocumint() {
                               }
                               label="No"
                             />
+                            {fieldState.error && (
+                              <Typography color="error" variant="caption">
+                                {fieldState.error.message}
+                              </Typography>
+                            )}
                           </FormGroup>
                         </Box>
                       ) : type === "textarea" ? (

@@ -313,7 +313,7 @@ const formFields = [
     type: "text",
     col: 6,
     required: true,
-    maxLength: 100,
+    maxLength: 20,
   },
   {
     name: "numero",
@@ -345,7 +345,7 @@ const formFields = [
     type: "text",
     col: 6,
     required: false,
-    maxLength: 100,
+    maxLength: 20,
   },
   {
     name: "tel1",
@@ -353,7 +353,7 @@ const formFields = [
     type: "text",
     xs: 12,
     required: true,
-    maxLength: 50,
+    maxLength: 20,
   },
   {
     name: "tel2",
@@ -361,7 +361,7 @@ const formFields = [
     type: "text",
     xs: 12,
     required: false,
-    maxLength: 50,
+    maxLength: 20,
   },
   {
     name: "localidad",
@@ -369,7 +369,7 @@ const formFields = [
     type: "text",
     xs: 12,
     required: true,
-    maxLength: 100,
+    maxLength: 20,
   },
   {
     name: "cp",
@@ -377,7 +377,7 @@ const formFields = [
     type: "text",
     xs: 5,
     required: true,
-    maxLength: 10,
+    maxLength: 5,
   },
   {
     name: "provincia",
@@ -394,7 +394,7 @@ const formFields = [
     label: "Nombre (Empresa)",
     type: "text",
     xs: 12,
-    maxLength: 100,
+    maxLength: 50,
   },
   {
     name: "cuitEmpresa",
@@ -408,21 +408,21 @@ const formFields = [
     label: "Calle (Empresa)",
     type: "text",
     xs: 12,
-    maxLength: 100,
+    maxLength: 20,
   },
   {
     name: "localidadEmpresa",
     label: "Localidad (Empresa)",
     type: "text",
     xs: 12,
-    maxLength: 100,
+    maxLength: 20,
   },
   {
     name: "cpEmpresa",
     label: "C.P. (Empresa)",
     type: "text",
     xs: 5,
-    maxLength: 10,
+    maxLength: 5,
   },
   {
     name: "provinciaEmpresa",
