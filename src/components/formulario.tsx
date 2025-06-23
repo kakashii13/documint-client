@@ -48,7 +48,7 @@ export default function FormularioDocumint() {
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       ...Object.fromEntries(
-        formFields.map((f) => [f.name, f.type === "checkbox" ? false : ""])
+        formFields.map((f) => [f.name, f.type === "checkbox" ? null : ""])
       ),
       familiares: [
         { parentesco: "", nombre: "", edad: "", cuil: "", fechaNac: "" },
@@ -179,7 +179,7 @@ export default function FormularioDocumint() {
                                 <Checkbox
                                   checked={field.value === true}
                                   onChange={() => field.onChange(true)}
-                                  required={required || false}
+                                  disabled={Boolean(isDisabled)}
                                 />
                               }
                               label="Si"
@@ -189,7 +189,7 @@ export default function FormularioDocumint() {
                                 <Checkbox
                                   checked={field.value === false}
                                   onChange={() => field.onChange(false)}
-                                  required={required || false}
+                                  disabled={Boolean(isDisabled)}
                                 />
                               }
                               label="No"
