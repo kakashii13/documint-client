@@ -9,6 +9,7 @@ interface FirmaProps {
 
 export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
+  const canvasWrapperRef = useRef<HTMLDivElement | null>(null);
 
   const guardarFirma = () => {
     if (sigCanvasRef.current) {
@@ -17,7 +18,27 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
     }
   };
 
-  // Limpiar la firma
+  // Escalar canvas al montar
+  useEffect(() => {
+    const canvas = sigCanvasRef.current?.getCanvas();
+    const wrapper = canvasWrapperRef.current;
+
+    if (canvas && wrapper) {
+      const ratio = window.devicePixelRatio || 1;
+      const width = wrapper.offsetWidth;
+      const height = wrapper.offsetHeight;
+
+      canvas.width = width * ratio;
+      canvas.height = height * ratio;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      const context = canvas.getContext("2d");
+      if (context) context.scale(ratio, ratio);
+    }
+  }, []);
+
+  // Limpiar la firma si cambia removeOnClick
   useEffect(() => {
     if (removeOnClick && sigCanvasRef.current) {
       sigCanvasRef.current.clear();
@@ -26,28 +47,37 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-      <SignatureCanvas
-        ref={sigCanvasRef}
-        penColor="black"
-        backgroundColor="white"
-        canvasProps={{
-          width: 400,
+      <Box
+        ref={canvasWrapperRef}
+        sx={{
+          width: "100%",
+          maxWidth: 400,
           height: 150,
-          style: {
-            border: "1px solid #ccc",
-            borderRadius: 4,
-          },
+          border: "1px solid #ccc",
+          borderRadius: 1,
+          overflow: "hidden",
         }}
-      />
+      >
+        <SignatureCanvas
+          ref={sigCanvasRef}
+          penColor="black"
+          backgroundColor="white"
+          canvasProps={{
+            style: {
+              width: "100%",
+              height: "100%",
+              display: "block",
+            },
+          }}
+        />
+      </Box>
+
       <Button onClick={guardarFirma} variant="contained">
         Guardar firma
       </Button>
+
       <Button
-        onClick={() => {
-          if (sigCanvasRef.current) {
-            sigCanvasRef.current.clear();
-          }
-        }}
+        onClick={() => sigCanvasRef.current?.clear()}
         variant="outlined"
         color="primary"
       >
