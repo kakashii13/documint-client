@@ -10,6 +10,7 @@ import {
   Divider,
   Paper,
   FormControlLabel,
+  FormGroup,
   Checkbox,
   Backdrop,
   Fade,
@@ -170,16 +171,31 @@ export default function FormularioDocumint() {
                           ))}
                         </TextField>
                       ) : type === "checkbox" ? (
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              {...field}
-                              checked={Boolean(field.value)}
-                              required={required || false}
+                        <Box>
+                          <Typography>{label}</Typography>
+                          <FormGroup row>
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={field.value === true}
+                                  onChange={() => field.onChange(true)}
+                                  required={required || false}
+                                />
+                              }
+                              label="Si"
                             />
-                          }
-                          label={label}
-                        />
+                            <FormControlLabel
+                              control={
+                                <Checkbox
+                                  checked={field.value === false}
+                                  onChange={() => field.onChange(false)}
+                                  required={required || false}
+                                />
+                              }
+                              label="No"
+                            />
+                          </FormGroup>
+                        </Box>
                       ) : type === "textarea" ? (
                         <TextField
                           {...field}
