@@ -7,6 +7,16 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 
 dayjs.extend(customParseFormat);
 
+type DatePickerProps = {
+  value: string | Date | null;
+  onChange: (value: string | Date | null) => void;
+  label?: string;
+  disabled?: boolean;
+  error?: boolean;
+  helperText?: string;
+  required?: boolean | undefined;
+};
+
 export default function DatePickerCustom({
   value,
   onChange,
@@ -15,7 +25,7 @@ export default function DatePickerCustom({
   error,
   helperText,
   required,
-}) {
+}: DatePickerProps) {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="es">
       <DatePicker

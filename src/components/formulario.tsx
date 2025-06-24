@@ -32,7 +32,7 @@ const formatDateToDDMMYYYY = (date: string | Date): string => {
   return `${day}/${month}/${year}`;
 };
 
-const isValidDateString = (value: any): boolean => {
+const isValidDateString = (value: unknown): boolean => {
   return (
     typeof value === "string" &&
     !isNaN(Date.parse(value)) &&
@@ -57,7 +57,7 @@ export default function FormularioDocumint() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: Record<string, unknown>) => {
     try {
       setLoading(true);
       setSuccess(false);
@@ -119,6 +119,8 @@ export default function FormularioDocumint() {
     }
   };
 
+  const watchedValues = useWatch({ control });
+
   return (
     <Box p={2} component={Paper}>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -140,7 +142,7 @@ export default function FormularioDocumint() {
               required,
             }) => {
               const watchValue = dependsOn
-                ? useWatch({ control, name: dependsOn as any })
+                ? watchedValues[dependsOn as keyof typeof watchedValues]
                 : true;
               const isDisabled = dependsOn && !watchValue;
 
@@ -150,6 +152,7 @@ export default function FormularioDocumint() {
                   size={{ xs: xs || 12, sm: col || 6, md: col || 4 }}
                 >
                   <Controller
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     name={name as any}
                     control={control}
                     render={({ field, fieldState }) =>

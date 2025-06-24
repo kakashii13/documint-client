@@ -42,6 +42,7 @@ const familiarFields = [
   { name: "fechaNac", label: "Fecha Nac.", type: "date", xs: 7 },
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default function CargaFamiliar({ control }: { control: any }) {
   const { fields, append } = useFieldArray({
     control,
@@ -96,6 +97,7 @@ export default function CargaFamiliar({ control }: { control: any }) {
                           disabled={field.disabled}
                           error={!!fieldState.error}
                           helperText={fieldState.error?.message}
+                          required={undefined}
                         />
                       ) : (
                         <TextField
