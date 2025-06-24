@@ -1,28 +1,23 @@
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Box,
-  TextField,
   Typography,
-  Grid,
-  MenuItem,
   Button,
   Divider,
   Paper,
-  FormControlLabel,
-  FormGroup,
-  Checkbox,
   Backdrop,
   Fade,
 } from "@mui/material";
 import schema from "../utils/validation";
 import { formFields } from "../utils/fields";
 import CargaFamiliar from "./carga-familiar";
-import DatePickerCustom from "./date-picker";
 import AdjuntarArchivos from "./adjuntar-archivo";
 import { useState } from "react";
 import { Firma } from "./signature";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { ConfirmForm } from "./confirm-form";
+import { FormFields } from "./form-fields";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -43,6 +38,9 @@ const isValidDateString = (value: unknown): boolean => {
 export default function FormularioDocumint() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isConfirmForm, setIsConfirmForm] = useState<boolean | undefined>(
+    undefined
+  );
   const [deleteSignature, setDeleteSignature] = useState(false);
 
   const { control, handleSubmit, reset } = useForm({
@@ -51,7 +49,7 @@ export default function FormularioDocumint() {
         formFields.map((f) => [f.name, f.type === "checkbox" ? null : ""])
       ),
       familiares: [
-        { parentesco: "", nombre: "", edad: "", cuil: "", fechaNac: "" },
+        { parentesco: "", nombre: "", edad: "", dni: "", fechaNac: "" },
       ],
     },
     resolver: yupResolver(schema),
@@ -62,6 +60,7 @@ export default function FormularioDocumint() {
       setLoading(true);
       setSuccess(false);
       setDeleteSignature(false);
+      console.log("test");
       const formData = new FormData();
 
       Object.entries(data).forEach(([key, value]) => {
@@ -119,145 +118,29 @@ export default function FormularioDocumint() {
     }
   };
 
-  const watchedValues = useWatch({ control });
-
   return (
     <Box p={2} component={Paper}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit, (errors) => console.log(errors))}>
         <Typography variant="h6" pb="20px">
           Datos personales
         </Typography>
 
-        <Grid container spacing={2} columns={12}>
-          {formFields.map(
-            ({
-              name,
-              label,
-              type,
-              options,
-              dependsOn,
-              col,
-              xs,
-              maxLength,
-              required,
-            }) => {
-              const watchValue = dependsOn
-                ? watchedValues[dependsOn as keyof typeof watchedValues]
-                : true;
-              const isDisabled = dependsOn && !watchValue;
-
-              return (
-                <Grid
-                  key={name}
-                  size={{ xs: xs || 12, sm: col || 6, md: col || 4 }}
-                >
-                  <Controller
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    name={name as any}
-                    control={control}
-                    render={({ field, fieldState }) =>
-                      type === "select" ? (
-                        <TextField
-                          {...field}
-                          select
-                          label={label}
-                          fullWidth
-                          disabled={Boolean(isDisabled)}
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                          required={required || false}
-                        >
-                          {options?.map((option) => (
-                            <MenuItem key={option} value={option}>
-                              {option}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      ) : type === "checkbox" ? (
-                        <Box>
-                          <Typography>{label}</Typography>
-                          <FormGroup row>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={field.value === true}
-                                  onChange={() => field.onChange(true)}
-                                  required={required || false}
-                                />
-                              }
-                              label="Si"
-                            />
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={field.value === false}
-                                  onChange={() => field.onChange(false)}
-                                  required={required || false}
-                                />
-                              }
-                              label="No"
-                            />
-                            {fieldState.error && (
-                              <Typography color="error" variant="caption">
-                                {fieldState.error.message}
-                              </Typography>
-                            )}
-                          </FormGroup>
-                        </Box>
-                      ) : type === "textarea" ? (
-                        <TextField
-                          {...field}
-                          label={label}
-                          fullWidth
-                          multiline
-                          disabled={Boolean(isDisabled)}
-                          rows={3}
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                          inputProps={{ maxLength: maxLength || undefined }}
-                          required={required || false}
-                        />
-                      ) : type === "date" ? (
-                        <DatePickerCustom
-                          value={field.value}
-                          onChange={field.onChange}
-                          label={label}
-                          disabled={Boolean(isDisabled)}
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                          required={required || false}
-                        />
-                      ) : (
-                        <TextField
-                          {...field}
-                          label={label}
-                          type={type}
-                          disabled={Boolean(isDisabled)}
-                          fullWidth
-                          error={!!fieldState.error}
-                          helperText={fieldState.error?.message}
-                          inputProps={{ maxLength: maxLength || undefined }}
-                          required={required || false}
-                        />
-                      )
-                    }
-                  />
-                </Grid>
-              );
-            }
-          )}
-        </Grid>
+        <FormFields control={control} formFields={formFields} />
 
         <CargaFamiliar control={control} />
 
+        <Divider sx={{ my: 3 }} />
+
         <AdjuntarArchivos control={control} />
+
+        <Divider sx={{ my: 3 }} />
 
         <Controller
           name="firma"
           control={control}
           render={({ field, fieldState }) => (
             <Box mt={3}>
-              <Typography variant="subtitle1" gutterBottom>
+              <Typography variant="h6" gutterBottom>
                 Firma del solicitante
               </Typography>
               <Firma
@@ -289,6 +172,13 @@ export default function FormularioDocumint() {
 
         <Divider sx={{ my: 3 }} />
 
+        <ConfirmForm
+          isConfirm={isConfirmForm}
+          setIsConfirm={setIsConfirmForm}
+        />
+
+        <Divider sx={{ my: 3 }} />
+
         <Box display="flex" justifyContent="flex-end" gap={2}>
           <Button
             variant="outlined"
@@ -303,7 +193,7 @@ export default function FormularioDocumint() {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={loading}
+            disabled={loading || !isConfirmForm}
             loading={loading}
           >
             {loading ? "Enviando..." : "Enviar"}

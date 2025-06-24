@@ -18,12 +18,12 @@ const schema = yup.object().shape({
   sexo: yup.string().required("Campo obligatorio"),
   nacionalidad: yup.string().required("Campo obligatorio"),
   estadoCivil: yup.string().required("Campo obligatorio"),
-  cuil: yup
+  dni: yup
     .string()
     .matches(/^[0-9]+$/, "Debe contener solo números")
     .required("Campo obligatorio")
-    .min(11, "Mínimo 11 caracteres")
-    .max(11, "Máximo 11 caracteres"),
+    .min(8, "Mínimo 8 caracteres")
+    .max(8, "Máximo 8 caracteres"),
   calle: yup
     .string()
     .required("Campo obligatorio")
@@ -58,6 +58,11 @@ const schema = yup.object().shape({
     )
     .required("Campo obligatorio"),
   provincia: yup.string().required("Campo obligatorio"),
+  claveFiscal: yup.string().required("Campo obligatorio"),
+  email: yup
+    .string()
+    .email("Debe ser un correo electrónico válido")
+    .required("Campo obligatorio"),
   empresa: yup.string(),
   cuitEmpresa: yup
     .string()
@@ -103,6 +108,12 @@ const schema = yup.object().shape({
       otherwise: (schema) => schema.notRequired(),
     }),
   operaciones: yup.boolean().required("Campo obligatorio"),
+  operacionesCuales: yup.string().when("operaciones", {
+    is: (operaciones: boolean) => operaciones === true,
+    then: (schema) =>
+      schema.required("Campo obligatorio si tuvo alguna operación"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
   medicamentos: yup.boolean().required("Campo obligatorio"),
   alergiasMedicamentos: yup.boolean().required("Campo obligatorio"),
   alergiasMedicamentosCuales: yup.string().when("alergiasMedicamentos", {
@@ -111,6 +122,7 @@ const schema = yup.object().shape({
       schema.required("Campo obligatorio si tiene alergias a medicamentos"),
     otherwise: (schema) => schema.notRequired(),
   }),
+  asesor: yup.string().required("Campo obligatorio"),
   observaciones: yup.string().notRequired(),
   firma: yup.string().required("La firma es requerida."),
   familiares: yup.array().of(
@@ -139,14 +151,14 @@ const schema = yup.object().shape({
             (/^[0-9]+$/.test(value) && value.length >= 1 && value.length <= 3)
         ),
 
-      cuil: yup
+      dni: yup
         .string()
         .nullable()
         .notRequired()
         .test(
-          "cuil-valido",
-          "Debe tener 11 dígitos numéricos",
-          (value) => !value || /^[0-9]{11}$/.test(value)
+          "dni-valido",
+          "Debe tener 8 dígitos numéricos",
+          (value) => !value || /^[0-9]{8}$/.test(value)
         ),
 
       fechaNac: yup

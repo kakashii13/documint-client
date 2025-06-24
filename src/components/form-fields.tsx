@@ -1,0 +1,157 @@
+import {
+  Box,
+  TextField,
+  Typography,
+  Grid,
+  MenuItem,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+} from "@mui/material";
+import { Controller, useWatch } from "react-hook-form";
+import DatePickerCustom from "./date-picker";
+
+type FormFieldsType = {
+  name: string;
+  label: string;
+  type: string;
+  options: string[];
+  dependsOn: string;
+  col: number;
+  xs: number;
+  maxLength: string;
+  required: boolean;
+};
+
+type FormFieldsProps = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  formFields: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  control: any;
+};
+
+export const FormFields = ({ formFields, control }: FormFieldsProps) => {
+  const watchedValues = useWatch({ control });
+
+  return (
+    <Grid container spacing={2} columns={12}>
+      {formFields.map(
+        ({
+          name,
+          label,
+          type,
+          options,
+          dependsOn,
+          col,
+          xs,
+          maxLength,
+          required,
+        }: FormFieldsType) => {
+          const watchValue = dependsOn
+            ? watchedValues[dependsOn as keyof typeof watchedValues]
+            : true;
+          const isDisabled = dependsOn && !watchValue;
+
+          return (
+            <Grid
+              key={name}
+              size={{ xs: xs || 12, sm: col || 6, md: col || 4 }}
+            >
+              <Controller
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                name={name as any}
+                control={control}
+                render={({ field, fieldState }) =>
+                  type === "select" ? (
+                    <TextField
+                      {...field}
+                      select
+                      label={label}
+                      fullWidth
+                      disabled={Boolean(isDisabled)}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      required={required || false}
+                    >
+                      {options?.map((option) => (
+                        <MenuItem key={option} value={option}>
+                          {option}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  ) : type === "checkbox" ? (
+                    <Box>
+                      <Typography>{label}</Typography>
+                      <FormGroup row>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={field.value === true}
+                              onChange={() => field.onChange(true)}
+                              required={required || false}
+                            />
+                          }
+                          label="Si"
+                        />
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={field.value === false}
+                              onChange={() => field.onChange(false)}
+                              required={required || false}
+                            />
+                          }
+                          label="No"
+                        />
+                        {fieldState.error && (
+                          <Typography color="error" variant="caption">
+                            {fieldState.error.message}
+                          </Typography>
+                        )}
+                      </FormGroup>
+                    </Box>
+                  ) : type === "textarea" ? (
+                    <TextField
+                      {...field}
+                      label={label}
+                      fullWidth
+                      multiline
+                      disabled={Boolean(isDisabled)}
+                      rows={3}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      inputProps={{ maxLength: maxLength || undefined }}
+                      required={required || false}
+                    />
+                  ) : type === "date" ? (
+                    <DatePickerCustom
+                      value={field.value}
+                      onChange={field.onChange}
+                      label={label}
+                      disabled={Boolean(isDisabled)}
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      required={required || false}
+                    />
+                  ) : (
+                    <TextField
+                      {...field}
+                      label={label}
+                      type={type}
+                      disabled={Boolean(isDisabled)}
+                      fullWidth
+                      error={!!fieldState.error}
+                      helperText={fieldState.error?.message}
+                      inputProps={{ maxLength: maxLength || undefined }}
+                      required={required || false}
+                    />
+                  )
+                }
+              />
+            </Grid>
+          );
+        }
+      )}
+    </Grid>
+  );
+};

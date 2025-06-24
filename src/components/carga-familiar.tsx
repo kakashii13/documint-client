@@ -24,7 +24,7 @@ const familiarFields = [
     ],
     xs: 12,
   },
-  { name: "cuil", label: "CUIL", type: "text", xs: 12, maxLength: 11 },
+  { name: "dni", label: "DNI", type: "text", xs: 12, maxLength: 8 },
   {
     name: "nombre",
     label: "Apellido y Nombre",
@@ -126,7 +126,7 @@ export default function CargaFamiliar({ control }: { control: any }) {
             parentesco: "",
             nombre: "",
             edad: "",
-            cuil: "",
+            dni: "",
             fechaNac: "",
           })
         }

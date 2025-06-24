@@ -300,12 +300,12 @@ const formFields = [
     required: true,
   },
   {
-    name: "cuil",
-    label: "CUIL",
+    name: "dni",
+    label: "DNI",
     type: "text",
     col: 12,
     required: true,
-    maxLength: 11,
+    maxLength: 8,
   },
   {
     name: "calle",
@@ -387,7 +387,21 @@ const formFields = [
     xs: 7,
     required: true,
   },
-
+  {
+    name: "claveFiscal",
+    label: "Clave Fiscal",
+    type: "text",
+    xs: 12,
+    required: true,
+    maxLength: 20,
+  },
+  {
+    name: "email",
+    label: "Email",
+    type: "email",
+    xs: 12,
+    maxLength: 50,
+  },
   // Datos empresa
   {
     name: "empresa",
@@ -479,10 +493,12 @@ const formFields = [
     xs: 6,
   },
   {
-    name: "medicamentos",
-    label: "¿Toma algún medicamento?",
-    type: "checkbox",
+    name: "operacionesCuales",
+    label: "¿Cuáles?",
+    type: "text",
     xs: 6,
+    dependsOn: "operaciones",
+    maxLength: 100,
   },
   {
     name: "alergiasMedicamentos",
@@ -500,11 +516,25 @@ const formFields = [
     required: true,
   },
   {
+    name: "medicamentos",
+    label: "¿Toma algún medicamento?",
+    type: "checkbox",
+    xs: 6,
+  },
+  {
     name: "observaciones",
     label: "Observaciones",
     type: "textarea",
     col: 12,
     maxLength: 500,
+  },
+  {
+    name: "asesor",
+    label: "Nombre asesor",
+    type: "text",
+    col: 12,
+    required: true,
+    maxLength: 30,
   },
 ];
 
