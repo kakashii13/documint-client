@@ -96,7 +96,7 @@ export default function FormularioDocumint() {
         });
       }
 
-      const response = await fetch("http://localhost:3000/submit", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/submit`, {
         method: "POST",
         body: formData,
       });
