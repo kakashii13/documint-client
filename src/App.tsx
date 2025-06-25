@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 import FormularioDocumint from "./components/formulario";
-import logoClient from "../assets/logo_client.png";
+import logoClient from "./assets/logo_client.png";
 
 function App() {
   return (
