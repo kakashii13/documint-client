@@ -507,6 +507,14 @@ const formFields = [
     xs: 6,
   },
   {
+    name: "medicamentosCuales",
+    label: "¿Cuáles?",
+    type: "text",
+    xs: 6,
+    dependsOn: "medicamentos",
+    maxLength: 100,
+  },
+  {
     name: "alergiasMedicamentos",
     label: "¿Es alérgico a medicamentos?",
     type: "checkbox",
