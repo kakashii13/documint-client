@@ -52,6 +52,7 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
         sx={{
           width: "100%",
           maxWidth: 370,
+          height: 150,
           border: "1px solid #ccc",
           borderRadius: 1,
           overflow: "hidden",
