@@ -51,8 +51,7 @@ export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
         ref={canvasWrapperRef}
         sx={{
           width: "100%",
-          maxWidth: 400,
-          height: 150,
+          maxWidth: 370,
           border: "1px solid #ccc",
           borderRadius: 1,
           overflow: "hidden",

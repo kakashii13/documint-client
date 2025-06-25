@@ -1,23 +1,15 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  Box,
-  Typography,
-  Button,
-  Divider,
-  Paper,
-  Backdrop,
-  Fade,
-} from "@mui/material";
+import { Box, Typography, Button, Divider, Paper } from "@mui/material";
 import schema from "../utils/validation";
 import { formFields } from "../utils/fields";
 import CargaFamiliar from "./carga-familiar";
 import AdjuntarArchivos from "./adjuntar-archivo";
 import { useState } from "react";
 import { Firma } from "./signature";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { ConfirmForm } from "./confirm-form";
 import { FormFields } from "./form-fields";
+import { Success } from "./success";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -108,9 +100,10 @@ export default function FormularioDocumint() {
       setSuccess(true);
 
       setTimeout(() => {
-        setDeleteSignature(true);
-        reset();
+        // setDeleteSignature(true);
+        // reset();
         setSuccess(false);
+        setIsConfirmForm(undefined);
       }, 3000);
     } catch (error) {
       console.error("Error al enviar:", error);
@@ -185,6 +178,7 @@ export default function FormularioDocumint() {
             color="primary"
             onClick={() => {
               reset();
+              setIsConfirmForm(undefined);
             }}
           >
             Limpiar formulario
@@ -200,24 +194,7 @@ export default function FormularioDocumint() {
           </Button>
         </Box>
       </form>
-      <Backdrop
-        open={success}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Fade in={success} timeout={{ enter: 300, exit: 300 }}>
-          <Box
-            textAlign="center"
-            bgcolor={"background.paper"}
-            p={4}
-            borderRadius={2}
-          >
-            <CheckCircleIcon sx={{ fontSize: 80, color: "success.main" }} />
-            <Typography variant="h6" color="text.primary" mt={2}>
-              Formulario enviado con éxito
-            </Typography>
-          </Box>
-        </Fade>
-      </Backdrop>
+      <Success success={success} />
     </Box>
   );
 }

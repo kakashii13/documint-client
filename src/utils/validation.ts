@@ -62,7 +62,7 @@ const schema = yup.object().shape({
   email: yup
     .string()
     .email("Debe ser un correo electrónico válido")
-    .required("Campo obligatorio"),
+    .notRequired(),
   empresa: yup.string(),
   cuitEmpresa: yup
     .string()

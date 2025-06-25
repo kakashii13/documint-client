@@ -1,17 +1,19 @@
-import { Container, Typography } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import FormularioDocumint from "./components/formulario";
 
 function App() {
   return (
     <Container>
-      <Typography
-        variant="h5"
-        gutterBottom
-        sx={{ textAlign: "center" }}
-        pb="10px"
-      >
-        Solicitud de Asociación - MGN
-      </Typography>
+      <Box
+        component="img"
+        src="/src/assets/logo_client.png"
+        alt="Logo Documint"
+        sx={{
+          width: "100%",
+          height: "auto",
+          borderRadius: 2,
+        }}
+      />
       <FormularioDocumint />
     </Container>
   );

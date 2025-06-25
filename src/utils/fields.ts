@@ -215,6 +215,7 @@ const paises = [
 ];
 
 const provincias = [
+  "CABA",
   "Buenos Aires",
   "Catamarca",
   "Chaco",
@@ -238,7 +239,6 @@ const provincias = [
   "Santiago del Estero",
   "Tierra del Fuego",
   "Tucumán",
-  "Ciudad Autónoma de Buenos Aires",
 ];
 
 const tipoDoc = [
@@ -390,7 +390,7 @@ const formFields = [
   {
     name: "claveFiscal",
     label: "Clave Fiscal",
-    type: "text",
+    type: "password",
     xs: 12,
     required: true,
     maxLength: 20,
@@ -501,6 +501,12 @@ const formFields = [
     maxLength: 100,
   },
   {
+    name: "medicamentos",
+    label: "¿Toma algún medicamento?",
+    type: "checkbox",
+    xs: 6,
+  },
+  {
     name: "alergiasMedicamentos",
     label: "¿Es alérgico a medicamentos?",
     type: "checkbox",
@@ -514,12 +520,6 @@ const formFields = [
     dependsOn: "alergiasMedicamentos",
     maxLength: 100,
     required: true,
-  },
-  {
-    name: "medicamentos",
-    label: "¿Toma algún medicamento?",
-    type: "checkbox",
-    xs: 6,
   },
   {
     name: "observaciones",

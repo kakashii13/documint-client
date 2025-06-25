@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { Controller, useWatch } from "react-hook-form";
 import DatePickerCustom from "./date-picker";
+import { PasswordInput } from "./password-input";
 
 type FormFieldsType = {
   name: string;
@@ -110,6 +111,15 @@ export const FormFields = ({ formFields, control }: FormFieldsProps) => {
                         )}
                       </FormGroup>
                     </Box>
+                  ) : type === "password" ? (
+                    <PasswordInput
+                      name={name}
+                      label={label}
+                      required={required}
+                      disabled={Boolean(isDisabled)}
+                      field={field}
+                      fieldState={fieldState}
+                    />
                   ) : type === "textarea" ? (
                     <TextField
                       {...field}
