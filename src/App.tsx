@@ -1,12 +1,13 @@
 import { Box, Container } from "@mui/material";
 import FormularioDocumint from "./components/formulario";
+import logoClient from "../assets/logo_client.png";
 
 function App() {
   return (
     <Container>
       <Box
         component="img"
-        src="./src/assets/logo_client.png"
+        src={logoClient}
         alt="Logo Documint"
         sx={{
           width: "100%",
