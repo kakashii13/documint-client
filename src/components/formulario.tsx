@@ -100,8 +100,8 @@ export default function FormularioDocumint() {
       setSuccess(true);
 
       setTimeout(() => {
-        // setDeleteSignature(true);
-        // reset();
+        setDeleteSignature(true);
+        reset();
         setSuccess(false);
         setIsConfirmForm(undefined);
       }, 3000);
