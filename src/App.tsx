@@ -6,7 +6,7 @@ function App() {
     <Container>
       <Box
         component="img"
-        src="/src/assets/logo_client.png"
+        src="./src/assets/logo_client.png"
         alt="Logo Documint"
         sx={{
           width: "100%",
