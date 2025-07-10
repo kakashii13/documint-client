@@ -10,6 +10,8 @@ import { Firma } from "./signature";
 import { ConfirmForm } from "./confirm-form";
 import { FormFields } from "./form-fields";
 import { Success } from "./success";
+import { useParams } from "react-router-dom";
+import apiService from "../services/api";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -28,8 +30,10 @@ const isValidDateString = (value: unknown): boolean => {
 };
 
 export default function FormularioDocumint() {
+  const { slug } = useParams();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [message, setMessage] = useState<string>("");
   const [isConfirmForm, setIsConfirmForm] = useState<boolean | undefined>(
     undefined
   );
@@ -52,9 +56,9 @@ export default function FormularioDocumint() {
       setLoading(true);
       setSuccess(false);
       setDeleteSignature(false);
-      console.log("test");
       const formData = new FormData();
 
+      // Formatear fechas y agregar datos al FormData
       Object.entries(data).forEach(([key, value]) => {
         if (Array.isArray(value)) {
           value.forEach((item, index) => {
@@ -87,14 +91,12 @@ export default function FormularioDocumint() {
         });
       }
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/submit`, {
-        method: "POST",
-        body: formData,
-      });
+      const response = await apiService.post(
+        `${import.meta.env.VITE_API_URL}/form/${slug}`,
+        formData
+      );
 
-      if (!response.ok) throw new Error("Error al enviar el formulario");
-
-      await response.json();
+      setMessage(response.data.message || "Formulario enviado con éxito");
 
       setLoading(false);
       setSuccess(true);
@@ -194,7 +196,7 @@ export default function FormularioDocumint() {
           </Button>
         </Box>
       </form>
-      <Success success={success} />
+      <Success success={success} text={message} />
     </Box>
   );
 }

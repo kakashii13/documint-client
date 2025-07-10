@@ -1,7 +1,13 @@
 import { Backdrop, Box, Fade, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-export const Success = ({ success }: { success: boolean }) => {
+export const Success = ({
+  success,
+  text = "Formulario enviado con éxito",
+}: {
+  success: boolean;
+  text?: string;
+}) => {
   return (
     <Backdrop
       open={success}
@@ -16,7 +22,7 @@ export const Success = ({ success }: { success: boolean }) => {
         >
           <CheckCircleIcon sx={{ fontSize: 80, color: "success.main" }} />
           <Typography variant="h6" color="text.primary" mt={2}>
-            Formulario enviado con éxito
+            {text}
           </Typography>
         </Box>
       </Fade>
