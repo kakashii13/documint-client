@@ -1,15 +1,16 @@
 import { createBrowserRouter } from "react-router-dom";
-import { AdminPanel } from "../pages/AdminPanel";
+import { AdminDashboard } from "../pages/AdminDashboard";
 import { CreateClientForm } from "../layout/CreateClientForm";
 import { ActivateAccount } from "../layout/activate-account";
-import { Login } from "../layout/login";
-import { PanelClient } from "../pages/ClientPanel";
+import { ClientUserDashboard } from "../pages/ClientUserDashboard";
 import { ProtectedRoute } from "./protectedRoute";
-import { ClientDetail } from "../layout/ClientDetail";
+import { ClientDetail } from "../pages/ClientDetail";
 import { CreateUserForm } from "../layout/CreateUserForm";
 import { CreateAdvisorForm } from "../layout/CreateAdvisorForm";
 import { UserDetail } from "../layout/UserDetail";
-import { FormLayout } from "../layout/form";
+import { FormLayout } from "../layout/FormLayout";
+import { ClientAdminDashboard } from "../pages/ClientAdminDashboard";
+import { Login } from "../pages/Login";
 
 export const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ export const router = createBrowserRouter([
     path: "/admin-panel",
     element: (
       <ProtectedRoute allowedRoles={["admin"]}>
-        <AdminPanel />
+        <AdminDashboard />
       </ProtectedRoute>
     ),
     errorElement: <div>Error</div>,
@@ -48,31 +49,39 @@ export const router = createBrowserRouter([
   {
     path: "/client-detail/:clientId",
     element: (
-      <ProtectedRoute allowedRoles={["admin"]}>
+      <ProtectedRoute allowedRoles={["admin", "admin-client"]}>
         <ClientDetail />
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/client-detail/create-user",
-    element: (
-      <ProtectedRoute allowedRoles={["admin"]}>
-        <CreateUserForm />
       </ProtectedRoute>
     ),
   },
   {
     path: "/client-panel",
     element: (
-      <ProtectedRoute allowedRoles={["client"]}>
-        <PanelClient />
+      <ProtectedRoute allowedRoles={["admin", "admin-client"]}>
+        <ClientAdminDashboard />
       </ProtectedRoute>
     ),
   },
   {
-    path: "/client-panel/:userId/create-advisor",
+    path: "/client-detail/create-user",
     element: (
-      <ProtectedRoute allowedRoles={["client", "admin"]}>
+      <ProtectedRoute allowedRoles={["admin", "admin-client"]}>
+        <CreateUserForm />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/client-user-panel",
+    element: (
+      <ProtectedRoute allowedRoles={["client"]}>
+        <ClientUserDashboard />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/client-user-panel/:userId/create-advisor",
+    element: (
+      <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <CreateAdvisorForm />
       </ProtectedRoute>
     ),
@@ -80,7 +89,7 @@ export const router = createBrowserRouter([
   {
     path: "/client-detail/user/:userId/advisors",
     element: (
-      <ProtectedRoute allowedRoles={["client", "admin"]}>
+      <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <UserDetail />
       </ProtectedRoute>
     ),
@@ -88,7 +97,7 @@ export const router = createBrowserRouter([
   {
     path: "/client-detail/:userId/create-advisor",
     element: (
-      <ProtectedRoute allowedRoles={["client", "admin"]}>
+      <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <CreateAdvisorForm />
       </ProtectedRoute>
     ),

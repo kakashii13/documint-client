@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import {
   Container,
   Box,
   Typography,
-  Button,
   Table,
   TableHead,
   TableBody,
@@ -13,10 +11,10 @@ import {
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
-import apiService from "../services/api";
-import { useAuthStore } from "../hooks/useAuthStore";
-import { ToasterAlert } from "../components/alert";
 import { TopBar } from "../components/TopBar";
+import { useGetClients } from "../features/clients/hooks/useGetClients";
+import { CreateButton } from "../components/ui/CreateButton";
+import { Welcome } from "../components/Welcome";
 
 type Client = {
   id: number;
@@ -24,12 +22,9 @@ type Client = {
   email: string;
 };
 
-export const AdminPanel = () => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
-  const token = useAuthStore((state: any) => state.token);
-  const user = useAuthStore((state: any) => state.user);
+export const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { clients } = useGetClients();
 
   const handleCreateClient = () => {
     navigate("/create-client");
@@ -41,52 +36,17 @@ export const AdminPanel = () => {
     });
   };
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await apiService.get("/clients", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: { userId: user?.id },
-        });
-        setClients(response.data.clients);
-      } catch (error: any) {
-        const errorMessage =
-          error.response?.data?.message || "Error al obtener clientes";
-        setAlert({
-          open: true,
-          type: "error",
-          message: errorMessage,
-        });
-      }
-    };
-
-    fetchClients();
-  }, []);
-
   return (
     <Box>
       <TopBar />
       <Container>
         {/* Página de bienvenida tras login */}
-        <Box
-          my={4}
-          display="flex"
-          flexDirection="column"
-          alignItems="flex-start"
-        >
-          <Typography variant="h5" component="h1" gutterBottom>
-            {`Bienvenido, ${user?.name || "Usuario"}`}
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCreateClient}
-            sx={{ mt: 4 }}
-          >
-            Crear Cliente
-          </Button>
+        <Box display="flex" flexDirection="column" alignItems="flex-start">
+          <Welcome />
+          <CreateButton
+            handleCreate={handleCreateClient}
+            text="Crear Cliente"
+          />
         </Box>
 
         {/* Listado de clientes en tabla */}
@@ -94,6 +54,9 @@ export const AdminPanel = () => {
           <Typography variant="h5" component="h2" gutterBottom>
             Listado de Clientes
           </Typography>
+          {/*
+            TODO: Implementar el mismo GRID que users
+          */}
           <Table>
             <TableHead>
               <TableRow>
@@ -104,7 +67,7 @@ export const AdminPanel = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {clients.map((client) => (
+              {clients.map((client: any) => (
                 <TableRow key={client.id} hover>
                   <TableCell>{client.id}</TableCell>
                   <TableCell>{client.name}</TableCell>
@@ -119,12 +82,6 @@ export const AdminPanel = () => {
             </TableBody>
           </Table>
         </Box>
-        <ToasterAlert
-          open={alert.open}
-          type={alert.type}
-          message={alert.message}
-          onClose={() => setAlert({ ...alert, open: false })}
-        />
       </Container>
     </Box>
   );

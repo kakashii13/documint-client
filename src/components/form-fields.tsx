@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Controller, useWatch } from "react-hook-form";
 import DatePickerCustom from "./date-picker";
-import { PasswordInput } from "./password-input";
+import { PasswordInput } from "./PasswordInput";
 
 type FormFieldsType = {
   name: string;

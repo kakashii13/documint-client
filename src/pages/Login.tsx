@@ -60,8 +60,10 @@ export const Login = () => {
       setUser(response.data.user);
       if (response.data.user.role === "admin") {
         navigate("/admin-panel");
-      } else {
+      } else if (response.data.user.role === "admin-client") {
         navigate("/client-panel");
+      } else {
+        navigate("/client-user-panel");
       }
     } catch (error: any) {
       const errorMessage =

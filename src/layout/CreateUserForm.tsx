@@ -5,20 +5,21 @@ import {
   TextField,
   Paper,
   Typography,
+  MenuItem, // ⬅️ nuevo
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useState } from "react";
-import apiService from "../services/api";
 import { ToasterAlert } from "../components/alert";
-import { useAuthStore } from "../hooks/useAuthStore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { TopBar } from "../components/TopBar";
+import { useCreateUser } from "../features/users/hooks/useCreateUser";
+import { useGetRoles } from "../hooks/useGetRoles";
 
 const clientSchema = yup.object().shape({
   name: yup.string().required("El nombre es requerido"),
   email: yup.string().email("Email inválido").required("El email es requerido"),
+  role: yup.string().required("El rol es requerido"), // ⬅️ validación del select
 });
 
 export const CreateUserForm = () => {
@@ -29,58 +30,23 @@ export const CreateUserForm = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(clientSchema),
-    defaultValues: { name: "", email: "" },
+    defaultValues: { name: "", email: "", role: "" },
   });
-  const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
-  const token = useAuthStore((state: any) => state.token);
+
+  // TODO: ver el tema de los alertas, no esta funcionando bien, quizas hacerlas global?
+  const { roles, alert } = useGetRoles();
+  const { createUser, loading } = useCreateUser();
+
   const { state } = useLocation();
   const { client } = state || {};
-  const navigate = useNavigate();
 
-  const onSubmit = async (data: { name: string; email: string }) => {
-    try {
-      setLoading(true);
-
-      const user = {
-        name: data.name,
-        email: data.email,
-        clientId: client?.id,
-        role: "client",
-      };
-      await apiService.post(
-        `${import.meta.env.VITE_API_URL}/invitations`,
-        { user },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      reset();
-      setLoading(false);
-      setAlert({
-        open: true,
-        type: "success",
-        message: "Invitacion enviada correctamente.",
-      });
-      setTimeout(() => {
-        navigate(`/client-detail/${client?.id}`, {
-          state: { client },
-        });
-      }, 1000);
-    } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Error al crear el usuario";
-      setAlert({
-        open: true,
-        type: "error",
-        message: errorMessage,
-      });
-      console.error("Error al crear el usuario", errorMessage);
-      setLoading(false);
-    }
+  const onSubmit = async (data: {
+    name: string;
+    email: string;
+    role: string;
+  }) => {
+    createUser(data, client?.id);
+    reset();
   };
 
   return (
@@ -103,7 +69,6 @@ export const CreateUserForm = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-
                 gap: 2,
                 my: 2,
                 p: "10px",
@@ -111,14 +76,11 @@ export const CreateUserForm = () => {
                 borderRadius: "8px",
               }}
             >
-              <Typography
-                variant="h5"
-                component="h1"
-                sx={{ mb: 2 }}
-                textAlign={"center"}
-              >
+              <Typography variant="h5" component="h1" textAlign="center" mb={2}>
                 Crear usuario
               </Typography>
+
+              {/* Nombre */}
               <Controller
                 name="name"
                 control={control}
@@ -132,6 +94,8 @@ export const CreateUserForm = () => {
                   />
                 )}
               />
+
+              {/* Email */}
               <Controller
                 name="email"
                 control={control}
@@ -147,16 +111,39 @@ export const CreateUserForm = () => {
                 )}
               />
 
+              {/* Select de Roles */}
+              <Controller
+                name="role"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    select
+                    label="Rol"
+                    {...field}
+                    error={!!errors.role}
+                    helperText={errors.role?.message}
+                    required
+                  >
+                    {roles.map((r) => (
+                      <MenuItem key={r.id ?? r.role} value={r.role}>
+                        {r.role}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                )}
+              />
+
               <Button
                 type="submit"
                 variant="contained"
                 color="primary"
-                loading={loading}
+                disabled={loading}
               >
                 Enviar invitación
               </Button>
             </Box>
           </Paper>
+
           <ToasterAlert
             open={alert.open}
             type={alert.type}
