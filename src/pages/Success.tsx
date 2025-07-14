@@ -1,14 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Success } from "../components/success";
 
-export const SuccessPage = () => {
-  const { text, buttonText, url } = useLocation().state as {
-    text: string;
-    buttonText?: string;
-    url?: string;
-  };
-
-  return (
-    <Success success={true} text={text} buttonText={buttonText} url={url} />
-  );
+export const FormSendedPage = () => {
+  const { referenceNumber } = useParams();
+  const response = "Su número de referencia es: " + referenceNumber;
+  const title = "Formulario enviado correctamente";
+  return <Success title={title} message={response} />;
 };

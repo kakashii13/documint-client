@@ -1,50 +1,69 @@
-import { Backdrop, Box, Button, Fade, Typography } from "@mui/material";
+import { Box, Button, Container, Paper, Typography } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
-export const Success = ({
-  success,
-  text = "Formulario enviado con éxito",
-  buttonText = "Aceptar",
-  url = "/",
-}: {
-  success: boolean;
-  text?: string;
+type Props = {
+  /** Línea principal, ej. “¡Gracias!” */
+  title: string;
+  /** Sub-título, ej. “El formulario se envió correctamente” */
+  message?: string;
+  /** Texto del botón opcional */
   buttonText?: string;
+  /** URL a la que redirige el botón */
   url?: string;
-}) => {
+};
+
+export const Success = ({ title, message, buttonText, url }: Props) => {
   return (
-    <Backdrop
-      open={success}
-      sx={{
-        color: "#fff",
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
-    >
-      <Fade in={success} timeout={{ enter: 300, exit: 300 }}>
+    <Container maxWidth="sm" sx={{ py: 10 }}>
+      <Paper elevation={2} sx={{ overflow: "hidden" }}>
+        {/* Franja superior verde */}
+        <Box sx={{ height: 6, bgcolor: "success.main" }} />
+
+        {/* Contenido */}
         <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
           textAlign="center"
-          bgcolor={"background.paper"}
-          p={4}
-          borderRadius={2}
+          px={4}
+          py={8}
         >
-          <CheckCircleIcon sx={{ fontSize: 80, color: "success.main" }} />
-          <Typography variant="h6" color="text.primary" mt={2}>
-            {text}
+          {/* Círculo con tilde */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            width={120}
+            height={120}
+            borderRadius="50%"
+            bgcolor="success.main"
+          >
+            <CheckCircleIcon sx={{ fontSize: 64, color: "#fff" }} />
+          </Box>
+
+          {/* Título y mensaje */}
+          <Typography variant="h5" fontWeight="bold" mt={4}>
+            {title}
           </Typography>
+
+          {message && (
+            <Typography variant="body1" mt={2} color="text.secondary">
+              {message}
+            </Typography>
+          )}
+
+          {/* Botón opcional */}
           {buttonText && (
-            <Box>
-              <Button
-                href={url}
-                variant="contained"
-                color="primary"
-                sx={{ mt: 2 }}
-              >
-                {buttonText}
-              </Button>
-            </Box>
+            <Button
+              href={url}
+              variant="contained"
+              sx={{ mt: 4, minWidth: 160 }}
+            >
+              {buttonText}
+            </Button>
           )}
         </Box>
-      </Fade>
-    </Backdrop>
+      </Paper>
+    </Container>
   );
 };

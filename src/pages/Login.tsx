@@ -18,7 +18,6 @@ import apiService from "../services/api";
 import { useAuthStore } from "../hooks/useAuthStore";
 import logo_marca from "../assets/logo_marca.png";
 import { useAlertStore } from "../hooks/useAlertStore";
-import { TopBar } from "../components/TopBar";
 
 const loginSchema = yup.object().shape({
   // Esquema de validación para Login\const loginSchema = yup.object().shape({

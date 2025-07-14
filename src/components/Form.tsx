@@ -9,8 +9,7 @@ import { useState } from "react";
 import { Firma } from "./signature";
 import { ConfirmForm } from "./confirm-form";
 import { FormFields } from "./form-fields";
-import { Success } from "./success";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
@@ -29,15 +28,14 @@ const isValidDateString = (value: unknown): boolean => {
   );
 };
 
-export default function FormularioDocumint() {
+export default function Form() {
   const { slug } = useParams();
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [message, setMessage] = useState<string>("");
   const [isConfirmForm, setIsConfirmForm] = useState<boolean | undefined>(
     undefined
   );
   const [deleteSignature, setDeleteSignature] = useState(false);
+  const navigate = useNavigate();
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
@@ -54,7 +52,6 @@ export default function FormularioDocumint() {
   const onSubmit = async (data: Record<string, unknown>) => {
     try {
       setLoading(true);
-      setSuccess(false);
       setDeleteSignature(false);
       const formData = new FormData();
 
@@ -96,16 +93,13 @@ export default function FormularioDocumint() {
         formData
       );
 
-      setMessage(response.data.message || "Formulario enviado con éxito");
-
       setLoading(false);
-      setSuccess(true);
 
       setTimeout(() => {
         setDeleteSignature(true);
         reset();
-        setSuccess(false);
         setIsConfirmForm(undefined);
+        navigate(`/form-sended/${response.data.referenceNumber}`);
       }, 3000);
     } catch (error) {
       console.error("Error al enviar:", error);
@@ -196,7 +190,6 @@ export default function FormularioDocumint() {
           </Button>
         </Box>
       </form>
-      <Success success={success} text={message} />
     </Box>
   );
 }

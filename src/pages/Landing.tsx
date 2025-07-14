@@ -41,13 +41,22 @@ export const Landing = () => {
             <Grid>
               <Stack
                 spacing={4}
-                alignItems={{ xs: "center", md: "flex-start" }}
+                alignItems={{ xs: "center", md: "center" }}
                 textAlign={{ xs: "center", md: "left" }}
               >
-                <Typography component="h1" variant="h3" fontWeight={700}>
+                <Typography
+                  component="h1"
+                  variant="h3"
+                  fontWeight={700}
+                  textAlign="center"
+                >
                   Gestioná usuarios, asesores y formularios en un solo lugar
                 </Typography>
-                <Typography variant="h6" color="text.secondary">
+                <Typography
+                  variant="h6"
+                  color="text.secondary"
+                  textAlign="center"
+                >
                   Documint te permite crear usuarios y asesores, generar links
                   únicos y recibir declaraciones juradas firmadas directamente
                   en tu correo. ¡Simplificá tu flujo de trabajo hoy mismo!
@@ -56,11 +65,11 @@ export const Landing = () => {
                   direction={{ xs: "column", sm: "row" }}
                   spacing={2}
                   justifyContent="center"
-                  width="100%"
+                  maxWidth={400}
                 >
                   <Button
                     variant="contained"
-                    size="large"
+                    size="medium"
                     component={RouterLink}
                     to="/login"
                   >

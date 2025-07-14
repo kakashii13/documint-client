@@ -11,10 +11,11 @@ import { UserDetail } from "../layout/UserDetail";
 import { FormLayout } from "../layout/FormLayout";
 import { ClientAdminDashboard } from "../pages/ClientAdminDashboard";
 import { Login } from "../pages/Login";
-import { SuccessPage } from "../pages/Success";
 import { ForgotPassword } from "../pages/ForgotPassword";
 import { RestorePassword } from "../pages/RestorePassword";
 import Landing from "../pages/Landing";
+import { FormSendedPage } from "../pages/Success";
+import { Account } from "../pages/Account";
 
 export const router = createBrowserRouter([
   {
@@ -26,9 +27,10 @@ export const router = createBrowserRouter([
     element: <FormLayout />,
   },
   {
-    path: "/form-submitted",
-    element: <SuccessPage />,
+    path: "/form-submitted/:referenceNumber",
+    element: <FormSendedPage />,
   },
+
   {
     path: "/activate-account/:token",
     element: <ActivateAccount />,
@@ -44,6 +46,14 @@ export const router = createBrowserRouter([
   {
     path: "/reset-password/:token/:uid",
     element: <RestorePassword />,
+  },
+  {
+    path: "/account",
+    element: (
+      <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
+        <Account />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/admin-panel",

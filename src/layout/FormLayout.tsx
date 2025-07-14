@@ -1,5 +1,5 @@
 import { Container, Box } from "@mui/material";
-import FormularioDocumint from "../components/formulario";
+import Form from "../components/Form";
 import logoClient from "../assets/logo_client.png";
 export const FormLayout = () => {
   return (
@@ -14,7 +14,7 @@ export const FormLayout = () => {
           borderRadius: 2,
         }}
       />
-      <FormularioDocumint />
+      <Form />
     </Container>
   );
 };

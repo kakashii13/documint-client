@@ -101,7 +101,7 @@ export const TopBar = () => {
         >
           <MenuItem
             onClick={() => {
-              /* TODO: perfil */ closeMenu();
+              navigate("/account");
             }}
           >
             Cuenta
