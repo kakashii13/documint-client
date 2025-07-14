@@ -1,9 +1,18 @@
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import { useAlertStore } from "../../../hooks/useAlertStore";
 
-export const AdvisorManager = ({ advisors }: { advisors: any }) => {
+export const AdvisorManager = ({
+  advisors,
+  onCreate,
+}: {
+  advisors: any;
+  onCreate: () => void;
+}) => {
+  const showAlert = useAlertStore((state) => state.showAlert);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 60 },
     { field: "name", headerName: "Nombre", flex: 1, minWidth: 100 },
@@ -16,11 +25,7 @@ export const AdvisorManager = ({ advisors }: { advisors: any }) => {
       renderCell: (params) => {
         const handleCopy = () => {
           navigator.clipboard.writeText(params.value);
-          // setAlert({
-          //   open: true,
-          //   type: "success",
-          //   message: "Link copiado al portapapeles.",
-          // });
+          showAlert("success", "Link copiado");
         };
 
         return (
@@ -62,22 +67,32 @@ export const AdvisorManager = ({ advisors }: { advisors: any }) => {
     },
   ];
 
+  // TODO: Implement delete logic
   const handleDelete = (id: number) => {
     // Implement delete logic here
     console.log(`Delete advisor with ID: ${id}`);
   };
   return (
-    <Box>
-      <Box height={400}>
-        <DataGrid
-          rows={advisors}
-          columns={columns}
-          //   pageSize={5}
-          //   rowsPerPageOptions={[5, 10]}
-          //   disableSelectionOnClick
-          autoHeight
-        />
+    <Box height={400}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Typography variant="h5">Asesores</Typography>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={onCreate}>
+          Crear asesor
+        </Button>
       </Box>
+      <DataGrid
+        rows={advisors}
+        columns={columns}
+        //   pageSize={5}
+        //   rowsPerPageOptions={[5, 10]}
+        //   disableSelectionOnClick
+        autoHeight
+      />
     </Box>
   );
 };

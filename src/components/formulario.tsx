@@ -1,7 +1,7 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Typography, Button, Divider, Paper } from "@mui/material";
-import schema from "../utils/validation";
+import formSchema from "../utils/validation";
 import { formFields } from "../utils/fields";
 import CargaFamiliar from "./carga-familiar";
 import AdjuntarArchivos from "./adjuntar-archivo";
@@ -48,7 +48,7 @@ export default function FormularioDocumint() {
         { parentesco: "", nombre: "", edad: "", dni: "", fechaNac: "" },
       ],
     },
-    resolver: yupResolver(schema),
+    resolver: yupResolver(formSchema),
   });
 
   const onSubmit = async (data: Record<string, unknown>) => {

@@ -1,7 +1,13 @@
 import { Snackbar, Alert as MuiAlert } from "@mui/material";
 
-export const ToasterAlert = ({ open, type, message, onClose }) => {
-  // type puede ser 'success' | 'info' | 'warning' | 'error'
+type AlertProps = {
+  open: boolean;
+  type: "success" | "info" | "warning" | "error";
+  message: string;
+  onClose: () => void;
+};
+
+export const ToasterAlert = ({ open, type, message, onClose }: AlertProps) => {
   return (
     <Snackbar
       open={open}

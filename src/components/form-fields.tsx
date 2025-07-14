@@ -18,8 +18,9 @@ type FormFieldsType = {
   type: string;
   options: string[];
   dependsOn: string;
-  col: number;
   xs: number;
+  sm: number;
+  md: number;
   maxLength: string;
   required: boolean;
 };
@@ -43,8 +44,9 @@ export const FormFields = ({ formFields, control }: FormFieldsProps) => {
           type,
           options,
           dependsOn,
-          col,
           xs,
+          sm,
+          md,
           maxLength,
           required,
         }: FormFieldsType) => {
@@ -54,10 +56,7 @@ export const FormFields = ({ formFields, control }: FormFieldsProps) => {
           const isDisabled = dependsOn && !watchValue;
 
           return (
-            <Grid
-              key={name}
-              size={{ xs: xs || 12, sm: col || 6, md: col || 4 }}
-            >
+            <Grid key={name} size={{ xs: xs || 12, sm: sm || 6, md: md || 4 }}>
               <Controller
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 name={name as any}

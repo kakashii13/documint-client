@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "./useAuthStore";
 import apiService from "../services/api";
+import { useAlertStore } from "./useAlertStore";
 
 export const useGetRoles = () => {
   const [roles, setRoles] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
   const token = useAuthStore((state: any) => state.token);
+  const showAlert = useAlertStore((state: any) => state.showAlert);
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -18,7 +19,7 @@ export const useGetRoles = () => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al obtener los roles";
-      setAlert({ open: true, type: "error", message: errorMessage });
+      showAlert("error", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -28,5 +29,5 @@ export const useGetRoles = () => {
     fetchRoles();
   }, []);
 
-  return { roles, loading, alert };
+  return { roles, loading };
 };

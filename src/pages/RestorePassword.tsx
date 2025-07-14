@@ -1,24 +1,23 @@
-import { useState } from "react";
 import {
   Container,
-  Box,
-  Typography,
   Button,
-  TextField,
   Avatar,
+  Typography,
   Paper,
+  Box,
+  TextField,
 } from "@mui/material";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
+import logo_marca from "../assets/logo_marca.png";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { useState } from "react";
+import { useAlertStore } from "../hooks/useAlertStore";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
-import { Success } from "../components/success";
-import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
-import logo_marca from "../assets/logo_marca.png";
 
-// Esquema de validación para activación de cuenta
-const activationSchema = yup.object().shape({
+const resetSchema = yup.object().shape({
   password: yup
     .string()
     .required("La contraseña es requerida")
@@ -29,41 +28,43 @@ const activationSchema = yup.object().shape({
     .required("La confirmación de contraseña es requerida"),
 });
 
-export const ActivateAccount = () => {
-  const { token } = useParams<{ token: string }>();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const navigate = useNavigate();
-
+export const RestorePassword = () => {
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm({
-    resolver: yupResolver(activationSchema),
+    resolver: yupResolver(resetSchema),
     defaultValues: { password: "", confirmPassword: "" },
   });
+  const { token, uid } = useParams<{ token: string; uid: string }>();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const onSubmit = async (data: { password: string }) => {
     try {
       setLoading(true);
+      await apiService.post("/reset-password", {
+        token,
+        uid,
+        password: data.password,
+      });
 
-      await apiService.post(
-        `${import.meta.env.VITE_API_URL}/activate-account`,
-        { token, password: data.password }
+      showAlert(
+        "success",
+        "Contraseña restablecida con éxito. Ahora puedes iniciar sesión."
       );
-
-      setSuccess(true);
-
-      setTimeout(() => {
-        setLoading(false);
-        reset();
-        setSuccess(false);
-        navigate("/login");
-      }, 2000);
-    } catch (error) {
-      console.error("Error al activar cuenta:", error);
+      setLoading(false);
+      reset();
+      navigate("/login");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Error al restablecer la contraseña";
+      showAlert("error", errorMessage);
+      setLoading(false);
     }
   };
 
@@ -80,14 +81,11 @@ export const ActivateAccount = () => {
           alignItems: "center",
         }}
       >
-        <Avatar sx={{ mb: 1, bgcolor: "primary.main" }}>
-          <VpnKeyOutlinedIcon />
+        <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
+          <LockOutlinedIcon />
         </Avatar>
-        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
-          Activar Cuenta
-        </Typography>
-        <Typography variant="subtitle1" sx={{ mb: 3, textAlign: "center" }}>
-          Ingresa tu nueva contraseña para completar la activación.
+        <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+          Restablecer contraseña
         </Typography>
 
         <Box
@@ -146,24 +144,25 @@ export const ActivateAccount = () => {
                 background: "linear-gradient(135deg, #5A62E5 0%, #000BCC 100%)",
               },
             }}
+            loading={loading}
           >
-            {loading ? "Activando..." : "Activar Cuenta"}
+            Continuar
           </Button>
 
-          <Success success={success} text="Cuenta activada correctamente." />
+          {/* Logo de Documint */}
+          <Box
+            component="img"
+            src={logo_marca}
+            alt="Documint Logo"
+            sx={{
+              display: "block",
+              mx: "auto",
+              width: 120,
+              mt: 4,
+              mb: 2,
+            }}
+          />
         </Box>
-        <Box
-          component="img"
-          src={logo_marca}
-          alt="Documint Logo"
-          sx={{
-            display: "block",
-            mx: "auto", // centra horizontalmente
-            width: 120, // ajusta al tamaño deseado
-            mt: 4, // margen superior
-            mb: 2, // margen inferior
-          }}
-        />
       </Paper>
     </Container>
   );

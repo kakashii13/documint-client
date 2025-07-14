@@ -3,7 +3,6 @@ import apiService from "../../../services/api";
 const advisorApi = {
   getAdvisors: async (userId: number, token: string) => {
     try {
-      ///users/${user?.id}/advisors
       const response = await apiService.get(`/users/${userId}/advisors`, {
         headers: { Authorization: `Bearer ${token}` },
       });

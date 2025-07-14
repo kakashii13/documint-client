@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../hooks/useAuthStore";
 import advisorApi from "../advisors/services/advisorApi";
+import { useAlertStore } from "../../hooks/useAlertStore";
 
 export const useGetAdvisors = (userId: number) => {
   const [advisors, setAdvisors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
+
   const token = useAuthStore((state: any) => state.token);
+  const showAlert = useAlertStore((state) => state.showAlert);
+
   const fetchAdvisors = async () => {
     try {
       setLoading(true);
@@ -16,11 +19,7 @@ export const useGetAdvisors = (userId: number) => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al obtener los asesores";
-      setAlert({
-        open: true,
-        type: "error",
-        message: errorMessage,
-      });
+      showAlert("error", errorMessage);
       setLoading(false);
     }
   };
@@ -29,5 +28,5 @@ export const useGetAdvisors = (userId: number) => {
     fetchAdvisors();
   }, []);
 
-  return { advisors, loading, alert, fetchAdvisors };
+  return { advisors, loading, fetchAdvisors };
 };

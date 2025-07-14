@@ -2,11 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../hooks/useAuthStore";
 import { useState } from "react";
 import usersApi from "../services/usersApi";
+import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
   const token = useAuthStore((state: any) => state.token);
+  const showAlert = useAlertStore((state) => state.showAlert);
   const navigate = useNavigate();
 
   const createUser = async (
@@ -26,25 +27,18 @@ export const useCreateUser = () => {
       await usersApi.createUser(user, token);
 
       setLoading(false);
-      setAlert({
-        open: true,
-        type: "success",
-        message: "Invitación enviada correctamente.",
-      });
+      showAlert("success", "Usuario creado correctamente");
 
       setTimeout(() => {
-        navigate(`/client-detail/${clientId}`, {
-          state: { client: { id: clientId } },
-        });
+        navigate(`/client-detail/${clientId}`);
       }, 1000);
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al crear el usuario";
-      setAlert({ open: true, type: "error", message: errorMessage });
-      console.error("Error al crear el usuario", errorMessage);
+      showAlert("error", errorMessage);
       setLoading(false);
     }
   };
 
-  return { loading, alert, createUser };
+  return { loading, createUser };
 };

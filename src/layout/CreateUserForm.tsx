@@ -5,21 +5,20 @@ import {
   TextField,
   Paper,
   Typography,
-  MenuItem, // ⬅️ nuevo
+  MenuItem,
 } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { ToasterAlert } from "../components/alert";
-import { useLocation } from "react-router-dom";
 import { TopBar } from "../components/TopBar";
 import { useCreateUser } from "../features/users/hooks/useCreateUser";
 import { useGetRoles } from "../hooks/useGetRoles";
+import { useParams } from "react-router-dom";
 
 const clientSchema = yup.object().shape({
   name: yup.string().required("El nombre es requerido"),
   email: yup.string().email("Email inválido").required("El email es requerido"),
-  role: yup.string().required("El rol es requerido"), // ⬅️ validación del select
+  role: yup.string().required("El rol es requerido"),
 });
 
 export const CreateUserForm = () => {
@@ -32,20 +31,20 @@ export const CreateUserForm = () => {
     resolver: yupResolver(clientSchema),
     defaultValues: { name: "", email: "", role: "" },
   });
-
-  // TODO: ver el tema de los alertas, no esta funcionando bien, quizas hacerlas global?
-  const { roles, alert } = useGetRoles();
+  const { clientId } = useParams();
+  const { roles } = useGetRoles();
   const { createUser, loading } = useCreateUser();
-
-  const { state } = useLocation();
-  const { client } = state || {};
 
   const onSubmit = async (data: {
     name: string;
     email: string;
     role: string;
   }) => {
-    createUser(data, client?.id);
+    if (!clientId) {
+      console.error("No clientId found in user");
+      return;
+    }
+    await createUser(data, Number(clientId));
     reset();
   };
 
@@ -137,19 +136,12 @@ export const CreateUserForm = () => {
                 type="submit"
                 variant="contained"
                 color="primary"
-                disabled={loading}
+                loading={loading}
               >
                 Enviar invitación
               </Button>
             </Box>
           </Paper>
-
-          <ToasterAlert
-            open={alert.open}
-            type={alert.type}
-            message={alert.message}
-            onClose={() => setAlert({ ...alert, open: false })}
-          />
         </form>
       </Container>
     </Box>

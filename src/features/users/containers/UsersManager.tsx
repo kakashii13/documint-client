@@ -5,14 +5,14 @@ import { useAuthStore } from "../../../hooks/useAuthStore";
 import { useGetUsers } from "../hooks/useGetUsers";
 import { UsersTable } from "../components/UsersTable";
 import usersApi from "../services/usersApi";
-import { ToasterAlert } from "../../../components/alert";
+import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const UsersManager = ({ clientId }: { clientId: number }) => {
   const token = useAuthStore((s: any) => s.token);
   const { users, fetchUsers } = useGetUsers(clientId || 0);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
 
   const navigate = useNavigate();
 
@@ -20,31 +20,23 @@ export const UsersManager = ({ clientId }: { clientId: number }) => {
     try {
       setLoading(true);
       await usersApi.deleteUser(clientId, userId, token);
-      setAlert({
-        open: true,
-        type: "success",
-        message: "Usuario eliminado correctamente",
-      });
+      showAlert("success", "Usuario eliminado correctamente");
       fetchUsers();
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al eliminar el usuario";
-      setAlert({ open: true, type: "error", message: errorMessage });
+      showAlert("error", errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   const handleCreateUser = () => {
-    navigate("/client-detail/create-user", {
-      state: { client: { id: clientId } },
-    });
+    navigate(`/client-detail/${clientId}/create-user`);
   };
 
-  const handleNavigateAdvisors = (params: any, userId: number) => {
-    navigate(`/client-detail/user/${userId}/advisors`, {
-      state: { user: params.row, clientId: clientId },
-    });
+  const handleNavigateAdvisors = (userId: number) => {
+    navigate(`/client-detail/${clientId}/user/${userId}/advisors`);
   };
 
   return (
@@ -55,12 +47,6 @@ export const UsersManager = ({ clientId }: { clientId: number }) => {
         onDelete={handleDeleteUser}
         onCreate={handleCreateUser}
         onNavigateAdvisors={handleNavigateAdvisors}
-      />
-      <ToasterAlert
-        open={alert.open}
-        type={alert.type}
-        message={alert.message}
-        onClose={() => setAlert({ open: false, type: "", message: "" })}
       />
     </Box>
   );

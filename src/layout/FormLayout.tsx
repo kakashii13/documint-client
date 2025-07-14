@@ -3,7 +3,7 @@ import FormularioDocumint from "../components/formulario";
 import logoClient from "../assets/logo_client.png";
 export const FormLayout = () => {
   return (
-    <Container>
+    <Container maxWidth="md">
       <Box
         component="img"
         src={logoClient}

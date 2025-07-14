@@ -11,7 +11,6 @@ export const ClientAdminDashboard = () => {
     <MainLayout>
       <Container>
         <Welcome />
-        Client admin dashboard
         <UsersManager clientId={clientId || 0} />
       </Container>
     </MainLayout>

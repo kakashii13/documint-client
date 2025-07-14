@@ -11,10 +11,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState } from "react";
 import apiService from "../services/api";
-import { ToasterAlert } from "../components/alert";
 import { useAuthStore } from "../hooks/useAuthStore";
 import { useNavigate } from "react-router-dom";
 import { TopBar } from "../components/TopBar";
+import { useAlertStore } from "../hooks/useAlertStore";
 
 const clientSchema = yup.object().shape({
   name: yup.string().required("El nombre es requerido"),
@@ -32,13 +32,11 @@ export const CreateClientForm = () => {
     defaultValues: { name: "", email: "" },
   });
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
   const token = useAuthStore((state: any) => state.token);
+  const showAlert = useAlertStore((state) => state.showAlert);
   const navigate = useNavigate();
 
   const onSubmit = async (data: { name: string; email: string }) => {
-    console.log(data);
-
     try {
       setLoading(true);
 
@@ -58,23 +56,14 @@ export const CreateClientForm = () => {
 
       reset();
       setLoading(false);
-      setAlert({
-        open: true,
-        type: "success",
-        message: "Cliente creado correctamente",
-      });
+      showAlert("success", response.data.message);
       setTimeout(() => {
         navigate("/admin-panel");
       }, 1000);
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al crear el cliente";
-      setAlert({
-        open: true,
-        type: "error",
-        message: errorMessage,
-      });
-      console.error("Error al crear cliente:", error);
+      showAlert("error", errorMessage);
       setLoading(false);
     }
   };
@@ -153,12 +142,6 @@ export const CreateClientForm = () => {
             </Button>
           </Box>
         </Paper>
-        <ToasterAlert
-          open={alert.open}
-          type={alert.type}
-          message={alert.message}
-          onClose={() => setAlert({ ...alert, open: false })}
-        />
       </Container>
     </Box>
   );

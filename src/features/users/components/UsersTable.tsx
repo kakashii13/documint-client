@@ -25,7 +25,7 @@ export const UsersTable = ({
   loading: boolean;
   onCreate: () => void;
   onDelete: (id: number) => void;
-  onNavigateAdvisors: (params: any, userId: number) => void;
+  onNavigateAdvisors: (userId: number) => void;
 }) => {
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 80 },
@@ -62,7 +62,7 @@ export const UsersTable = ({
           </IconButton>
           <IconButton
             size="small"
-            onClick={() => onNavigateAdvisors(params, params.row.id)}
+            onClick={() => onNavigateAdvisors(params.row.id)}
           >
             <ArrowForwardIosIcon fontSize="small" />
           </IconButton>

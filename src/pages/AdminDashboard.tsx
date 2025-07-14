@@ -11,10 +11,11 @@ import {
 } from "@mui/material";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
-import { TopBar } from "../components/TopBar";
 import { useGetClients } from "../features/clients/hooks/useGetClients";
 import { CreateButton } from "../components/ui/CreateButton";
 import { Welcome } from "../components/Welcome";
+import { MainLayout } from "../layout/MainLayout";
+import { useClientStore } from "../hooks/useClientStore";
 
 type Client = {
   id: number;
@@ -24,21 +25,20 @@ type Client = {
 
 export const AdminDashboard = () => {
   const navigate = useNavigate();
-  const { clients } = useGetClients();
+
+  useGetClients();
+  const clients = useClientStore((state) => state.clients);
 
   const handleCreateClient = () => {
     navigate("/create-client");
   };
 
   const handleEnterClient = (client: Client) => {
-    navigate(`/client-detail/${client?.id}`, {
-      state: { client },
-    });
+    navigate(`/client-detail/${client?.id}`);
   };
 
   return (
-    <Box>
-      <TopBar />
+    <MainLayout>
       <Container>
         {/* Página de bienvenida tras login */}
         <Box display="flex" flexDirection="column" alignItems="flex-start">
@@ -83,6 +83,6 @@ export const AdminDashboard = () => {
           </Table>
         </Box>
       </Container>
-    </Box>
+    </MainLayout>
   );
 };

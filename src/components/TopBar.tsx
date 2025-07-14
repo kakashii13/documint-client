@@ -1,70 +1,85 @@
 import { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Avatar from "@mui/material/Avatar";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+  Typography,
+  Button,
+} from "@mui/material";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import LoginIcon from "@mui/icons-material/Login";
 
-// Ruta de tu logo
+import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+
 import logo from "../assets/logo_documint.png";
 import { useAuthStore } from "../hooks/useAuthStore";
-import { useNavigate } from "react-router-dom";
+
+// Rutas que se consideran "flow de auth"
+const AUTH_ROUTES = ["/login", "/forgot-password", "/reset-password"];
 
 export const TopBar = () => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const logout = useAuthStore((state: any) => state.logout);
-  const user = useAuthStore((state: any) => state.user);
+  const { pathname } = useLocation();
   const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
 
-  const handleAvatarClick = (event: any) => {
-    setAnchorEl(event.currentTarget);
-  };
+  /** ------------------------ 1. BARRA PARA AUTH FLOW ---------------------- */
+  const isAuthFlow =
+    pathname === "/" || AUTH_ROUTES.some((r) => pathname.startsWith(r));
+  if (isAuthFlow) {
+    return (
+      <AppBar position="static" sx={{ background: "#f5f7fa" }} elevation={0}>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          {/* Logo → Home */}
+          <IconButton component={RouterLink} to="/" disableRipple>
+            <img src={logo} alt="Documint" height={32} />
+          </IconButton>
 
-  const handleNavigate = () => {
-    if (user?.role === "admin") {
-      navigate("/admin-panel");
-    } else {
-      navigate("/client-panel");
-    }
-  };
+          {/* Botón “Iniciar sesión” (oculto si ya estás en /login) */}
+          {pathname !== "/login" && (
+            <Button
+              component={RouterLink}
+              to="/login"
+              variant="outlined"
+              size="small"
+              startIcon={<LoginIcon />}
+            >
+              Iniciar sesión
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+    );
+  }
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  /** --------------------- 2. BARRA PARA USUARIO LOGUEADO ------------------ */
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const openMenu = (e: React.MouseEvent<HTMLElement>) =>
+    setAnchorEl(e.currentTarget);
+  const closeMenu = () => setAnchorEl(null);
 
-  const handleAccount = () => {
-    // lógica para "cuenta"
-    handleClose();
-  };
-
-  const handleLogout = () => {
-    handleClose();
-    logout();
+  const handleNavigateHome = () => {
+    if (user?.role === "admin") navigate("/admin-panel");
+    else if (user?.role === "admin-client")
+      navigate(`/client-panel/${user?.clientId}`);
+    else navigate("/user-panel");
   };
 
   return (
-    <AppBar
-      position="static"
-      elevation={1}
-      sx={{ backgroundColor: "#1b62b4", color: "#000" }}
-    >
+    <AppBar position="static" elevation={1} sx={{ bgcolor: "primary.main" }}>
       <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Logo a la izquierda */}
+        {/* Logo + nombre */}
         <Box
+          onClick={handleNavigateHome}
           display="flex"
           alignItems="center"
-          onClick={handleNavigate}
-          px="10px"
+          px={1}
           sx={{
             cursor: "pointer",
-            ":hover": {
-              bgcolor: "rgba(197, 209, 219, 0.5)", // 0.5 = 50% opacidad
-              borderRadius: "4px",
-              px: "10px",
-            },
+            "&:hover": { bgcolor: "rgba(255,255,255,0.08)", borderRadius: 1 },
           }}
         >
           <img src={logo} alt="Logo" style={{ height: 40, marginRight: 8 }} />
@@ -73,25 +88,32 @@ export const TopBar = () => {
           </Typography>
         </Box>
 
-        {/* Avatar y menú a la derecha */}
-        <IconButton onClick={handleAvatarClick} size="small">
-          <Avatar sx={{ width: 35, height: 35 }} />
+        {/* Menu “…” */}
+        <IconButton onClick={openMenu} size="small">
+          <MoreHorizIcon sx={{ color: "#fff" }} />
         </IconButton>
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "right",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "right",
-          }}
+          onClose={closeMenu}
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          <MenuItem onClick={handleAccount}>Cuenta</MenuItem>
-          <MenuItem onClick={handleLogout}>Salir</MenuItem>
+          <MenuItem
+            onClick={() => {
+              /* TODO: perfil */ closeMenu();
+            }}
+          >
+            Cuenta
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              closeMenu();
+              logout();
+            }}
+          >
+            Salir
+          </MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>

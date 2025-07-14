@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AdminDashboard } from "../pages/AdminDashboard";
 import { CreateClientForm } from "../layout/CreateClientForm";
-import { ActivateAccount } from "../layout/activate-account";
+import { ActivateAccount } from "../pages/ActivateAccount";
 import { ClientUserDashboard } from "../pages/ClientUserDashboard";
 import { ProtectedRoute } from "./protectedRoute";
 import { ClientDetail } from "../pages/ClientDetail";
@@ -11,15 +11,23 @@ import { UserDetail } from "../layout/UserDetail";
 import { FormLayout } from "../layout/FormLayout";
 import { ClientAdminDashboard } from "../pages/ClientAdminDashboard";
 import { Login } from "../pages/Login";
+import { SuccessPage } from "../pages/Success";
+import { ForgotPassword } from "../pages/ForgotPassword";
+import { RestorePassword } from "../pages/RestorePassword";
+import Landing from "../pages/Landing";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <Landing />,
   },
   {
     path: "/form/:slug",
     element: <FormLayout />,
+  },
+  {
+    path: "/form-submitted",
+    element: <SuccessPage />,
   },
   {
     path: "/activate-account/:token",
@@ -28,6 +36,14 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password/:token/:uid",
+    element: <RestorePassword />,
   },
   {
     path: "/admin-panel",
@@ -55,15 +71,15 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/client-panel",
+    path: "/client-panel/:clientId",
     element: (
-      <ProtectedRoute allowedRoles={["admin", "admin-client"]}>
+      <ProtectedRoute allowedRoles={["admin-client"]}>
         <ClientAdminDashboard />
       </ProtectedRoute>
     ),
   },
   {
-    path: "/client-detail/create-user",
+    path: "/client-detail/:clientId/create-user",
     element: (
       <ProtectedRoute allowedRoles={["admin", "admin-client"]}>
         <CreateUserForm />
@@ -71,7 +87,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/client-user-panel",
+    path: "/client-user-panel/:clientId",
     element: (
       <ProtectedRoute allowedRoles={["client"]}>
         <ClientUserDashboard />
@@ -79,7 +95,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/client-user-panel/:userId/create-advisor",
+    path: "/client-user-panel/:clientId/user/:userId/create-advisor",
     element: (
       <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <CreateAdvisorForm />
@@ -87,7 +103,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/client-detail/user/:userId/advisors",
+    path: "/client-detail/:clientId/user/:userId/advisors",
     element: (
       <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <UserDetail />
@@ -95,7 +111,7 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: "/client-detail/:userId/create-advisor",
+    path: "/client-detail/:clientId/user/:userId/create-advisor",
     element: (
       <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
         <CreateAdvisorForm />

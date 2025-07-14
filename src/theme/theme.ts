@@ -9,6 +9,12 @@ const theme = createTheme({
     secondary: {
       main: "#9c27b0",
     },
+    background: {
+      default: "#f5f7fa",
+    },
+  },
+  typography: {
+    fontFamily: "Inter, sans-serif",
   },
 });
 

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as yup from "yup";
 
-const schema = yup.object().shape({
+const formSchema = yup.object().shape({
   nombre: yup
     .string()
     .required("Campo obligatorio")
@@ -15,15 +15,15 @@ const schema = yup.object().shape({
       return fecha.isValid() && fecha.isBefore(dayjs().add(1, "day"), "day");
     }),
   tipoDoc: yup.string().required("Campo obligatorio"),
-  sexo: yup.string().required("Campo obligatorio"),
-  nacionalidad: yup.string().required("Campo obligatorio"),
-  estadoCivil: yup.string().required("Campo obligatorio"),
   dni: yup
     .string()
     .matches(/^[0-9]+$/, "Debe contener solo números")
     .required("Campo obligatorio")
     .min(8, "Mínimo 8 caracteres")
     .max(8, "Máximo 8 caracteres"),
+  sexo: yup.string().required("Campo obligatorio"),
+  nacionalidad: yup.string().required("Campo obligatorio"),
+  estadoCivil: yup.string().required("Campo obligatorio"),
   calle: yup
     .string()
     .required("Campo obligatorio")
@@ -176,4 +176,4 @@ const schema = yup.object().shape({
   ),
 });
 
-export default schema;
+export default formSchema;

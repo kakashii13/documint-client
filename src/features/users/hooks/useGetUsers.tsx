@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../../../hooks/useAuthStore";
 import usersApi from "../services/usersApi";
+import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const useGetUsers = (clientId: number) => {
   const [users, setUsers] = useState<[]>([]);
   const [loading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({ open: false, type: "", message: "" });
   const token = useAuthStore((s: any) => s.token);
+  const showAlert = useAlertStore((state) => state.showAlert);
 
   const fetchUsers = async () => {
     try {
@@ -17,11 +18,7 @@ export const useGetUsers = (clientId: number) => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al obtener los usuarios";
-      setAlert({
-        open: true,
-        type: "error",
-        message: errorMessage,
-      });
+      showAlert("error", errorMessage);
       setLoading(false);
     }
   };
@@ -30,5 +27,5 @@ export const useGetUsers = (clientId: number) => {
     fetchUsers();
   }, [clientId]);
 
-  return { users, loading, alert, fetchUsers };
+  return { users, loading, fetchUsers };
 };
