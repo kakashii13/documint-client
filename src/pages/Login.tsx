@@ -7,17 +7,17 @@ import {
   Typography,
   TextField,
   Button,
-  Link,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import apiService from "../services/api";
 import { useAuthStore } from "../hooks/useAuthStore";
 import logo_marca from "../assets/logo_marca.png";
 import { useAlertStore } from "../hooks/useAlertStore";
+import { MainLayout } from "../layout/MainLayout";
 
 const loginSchema = yup.object().shape({
   // Esquema de validación para Login\const loginSchema = yup.object().shape({
@@ -79,7 +79,7 @@ export const Login = () => {
   };
 
   return (
-    <Box>
+    <MainLayout>
       <Container maxWidth="xs">
         <Paper
           elevation={6}
@@ -162,8 +162,10 @@ export const Login = () => {
             </Button>
 
             <Box textAlign="center">
-              <Link href="/forgot-password" variant="body2">
-                ¿Olvidaste tu contraseña?
+              <Link to="/forgot-password" style={{ textDecoration: "none" }}>
+                <Typography variant="body2" color="#1976D2">
+                  ¿Olvidaste tu contraseña?
+                </Typography>
               </Link>
             </Box>
             {/* Logo de Documint */}
@@ -182,6 +184,6 @@ export const Login = () => {
           </Box>
         </Paper>
       </Container>
-    </Box>
+    </MainLayout>
   );
 };
