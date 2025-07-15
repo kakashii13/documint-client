@@ -49,30 +49,41 @@ export default function Form() {
     resolver: yupResolver(formSchema),
   });
 
-  const onSubmit = async (data: Record<string, unknown>) => {
+  const onSubmit = async (data: Record<string, any>) => {
     try {
       setLoading(true);
       setDeleteSignature(false);
+
       const formData = new FormData();
 
-      // Formatear fechas y agregar datos al FormData
+      // 1. Recorrer campos y formatear / agregar al FormData
       Object.entries(data).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          value.forEach((item, index) => {
-            Object.entries(item).forEach(([itemKey, itemValue]) => {
-              const formatted =
-                itemValue instanceof Date || isValidDateString(itemValue)
-                  ? formatDateToDDMMYYYY(itemValue as string | Date)
-                  : itemValue;
-              formData.append(
-                `${key}[${index}][${itemKey}]`,
-                String(formatted ?? "")
-              );
+        // Verificar si es un archivo antes que cualquier otra cosa
+        if (value instanceof File) {
+          formData.append(key, value);
+        } else if (value instanceof FileList) {
+          Array.from(value).forEach((file) => formData.append(key, file));
+        } else if (Array.isArray(value)) {
+          // Verificar si es array de archivos
+          if (value[0] instanceof File) {
+            value.forEach((file) => formData.append(key, file));
+          } else {
+            // Arrays de objetos (ej.: hijos[])
+            value.forEach((item, index) => {
+              Object.entries(item).forEach(([k, v]) => {
+                const formatted =
+                  v instanceof Date || isValidDateString(v)
+                    ? formatDateToDDMMYYYY(v as string | Date)
+                    : v;
+                formData.append(
+                  `${key}[${index}][${k}]`,
+                  String(formatted ?? "")
+                );
+              });
             });
-          });
-        } else if (value instanceof FileList || value instanceof File) {
-          // Archivos se manejan aparte
+          }
         } else {
+          // Primitivos
           const formatted =
             value instanceof Date || isValidDateString(value)
               ? formatDateToDDMMYYYY(value as string | Date)
@@ -81,23 +92,14 @@ export default function Form() {
         }
       });
 
-      // Adjuntos
-      if (data.adjuntos) {
-        // Convierte FileList → Array
-        const files = Array.isArray(data.adjuntos)
-          ? data.adjuntos
-          : Array.from(data.adjuntos as FileList);
-
-        files.forEach((file) => {
-          formData.append("adjuntos", file);
-        });
-      }
-
+      // 2. Enviar
       const response = await apiService.post(
         `${import.meta.env.VITE_API_URL}/form/${slug}`,
-        formData
+        formData,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
 
+      // 3. Feedback al usuario
       setTimeout(() => {
         setDeleteSignature(true);
         reset();
@@ -105,8 +107,8 @@ export default function Form() {
         setLoading(false);
         navigate(`/form-submitted/${response.data.referenceNumber}`);
       }, 3000);
-    } catch (error) {
-      console.error("Error al enviar:", error);
+    } catch (err) {
+      console.error("Error al enviar:", err);
       setLoading(false);
     }
   };
