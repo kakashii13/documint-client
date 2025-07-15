@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Typography, Button, Divider, Paper } from "@mui/material";
 import formSchema from "../utils/validation";
 import { formFields } from "../utils/fields";
+import { Signature } from "./Signature";
 import CargaFamiliar from "./FamilyInputs";
 import AttachFiles from "./AttachFiles";
 import { useEffect, useState } from "react";
@@ -11,7 +12,6 @@ import { FormFields } from "./FormFields";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
 import { useGetAdvisor } from "../features/advisors/hooks/useGetAdvisor";
-import { Signature } from "./Signature";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
