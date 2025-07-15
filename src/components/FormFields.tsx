@@ -9,7 +9,7 @@ import {
   Checkbox,
 } from "@mui/material";
 import { Controller, useWatch } from "react-hook-form";
-import DatePickerCustom from "./date-picker";
+import DatePickerCustom from "./DatePicker";
 import { PasswordInput } from "./PasswordInput";
 
 type FormFieldsType = {

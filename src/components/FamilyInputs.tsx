@@ -8,7 +8,7 @@ import {
   Typography,
   Box,
 } from "@mui/material";
-import DatePickerCustom from "./date-picker";
+import DatePickerCustom from "./DatePicker";
 
 const familiarFields = [
   {

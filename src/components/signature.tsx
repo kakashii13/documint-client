@@ -2,12 +2,12 @@ import { Box, Button } from "@mui/material";
 import { useEffect, useRef } from "react";
 import SignatureCanvas from "react-signature-canvas";
 
-interface FirmaProps {
+interface SignatureProps {
   onFirmaChange: (dataUrl: string) => void;
   removeOnClick?: boolean;
 }
 
-export const Firma = ({ onFirmaChange, removeOnClick }: FirmaProps) => {
+export const Signature = ({ onFirmaChange, removeOnClick }: SignatureProps) => {
   const sigCanvasRef = useRef<SignatureCanvas | null>(null);
   const canvasWrapperRef = useRef<HTMLDivElement | null>(null);
 

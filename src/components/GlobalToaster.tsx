@@ -1,5 +1,5 @@
 import { useAlertStore } from "../hooks/useAlertStore";
-import { ToasterAlert } from "./alert";
+import { ToasterAlert } from "./ToastAlert";
 
 export const GlobalToaster = () => {
   const { alert, closeAlert } = useAlertStore();

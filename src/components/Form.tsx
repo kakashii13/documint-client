@@ -3,11 +3,11 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Typography, Button, Divider, Paper } from "@mui/material";
 import formSchema from "../utils/validation";
 import { formFields } from "../utils/fields";
-import CargaFamiliar from "./carga-familiar";
-import AdjuntarArchivos from "./adjuntar-archivo";
+import CargaFamiliar from "./FamilyInputs";
+import AttachFiles from "./AttachFiles";
 import { useEffect, useState } from "react";
-import { Firma } from "./signature";
-import { ConfirmForm } from "./confirm-form";
+import { Signature } from "./Signature";
+import { ConfirmForm } from "./ConfirmForm";
 import { FormFields } from "./FormFields";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
@@ -142,7 +142,7 @@ export default function Form() {
 
         <Divider sx={{ my: 3 }} />
 
-        <AdjuntarArchivos control={control} />
+        <AttachFiles control={control} />
 
         <Divider sx={{ my: 3 }} />
 
@@ -154,7 +154,7 @@ export default function Form() {
               <Typography variant="h6" gutterBottom>
                 Firma del solicitante
               </Typography>
-              <Firma
+              <Signature
                 onFirmaChange={(dataUrl) => field.onChange(dataUrl)}
                 removeOnClick={deleteSignature}
               />

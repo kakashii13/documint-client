@@ -1,13 +1,13 @@
 import { createBrowserRouter } from "react-router-dom";
 import { AdminDashboard } from "../pages/AdminDashboard";
-import { CreateClientForm } from "../layout/CreateClientForm";
+import { CreateClientForm } from "../pages/CreateClientForm";
 import { ActivateAccount } from "../pages/ActivateAccount";
 import { ClientUserDashboard } from "../pages/ClientUserDashboard";
 import { ProtectedRoute } from "./protectedRoute";
 import { ClientDetail } from "../pages/ClientDetail";
-import { CreateUserForm } from "../layout/CreateUserForm";
-import { CreateAdvisorForm } from "../layout/CreateAdvisorForm";
-import { UserDetail } from "../layout/UserDetail";
+import { CreateUserForm } from "../pages/CreateUserForm";
+import { CreateAdvisorForm } from "../pages/CreateAdvisorForm";
+import { UserDetail } from "../pages/UserDetail";
 import { FormLayout } from "../layout/FormLayout";
 import { ClientAdminDashboard } from "../pages/ClientAdminDashboard";
 import { Login } from "../pages/Login";

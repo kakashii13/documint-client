@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Success } from "../components/success";
+import { Success } from "../components/Success";
 
 export const FormSendedPage = () => {
   const { referenceNumber } = useParams();

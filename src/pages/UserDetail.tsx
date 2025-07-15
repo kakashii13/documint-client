@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Container } from "@mui/material";
 import { useGetAdvisors } from "../features/advisors/hooks/useGetAdvisors";
 import { AdvisorManager } from "../features/advisors/components/AdvisorManager";
-import { MainLayout } from "./MainLayout";
+import { MainLayout } from "../layout/MainLayout";
 
 export const UserDetail = () => {
   const { clientId, userId } = useParams();

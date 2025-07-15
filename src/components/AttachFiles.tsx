@@ -15,10 +15,7 @@ interface Props {
   name?: string;
 }
 
-export default function AdjuntarArchivos({
-  control,
-  name = "adjuntos",
-}: Props) {
+export default function AttachFiles({ control, name = "adjuntos" }: Props) {
   return (
     <Controller
       name={name}
