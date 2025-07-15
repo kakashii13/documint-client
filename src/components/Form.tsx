@@ -99,7 +99,7 @@ export default function Form() {
         setDeleteSignature(true);
         reset();
         setIsConfirmForm(undefined);
-        navigate(`/form-sended/${response.data.referenceNumber}`);
+        navigate(`/form-submitted/${response.data.referenceNumber}`);
       }, 3000);
     } catch (error) {
       console.error("Error al enviar:", error);

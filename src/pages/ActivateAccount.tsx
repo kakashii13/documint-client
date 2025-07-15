@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Container,
   Box,
@@ -31,8 +31,6 @@ const activationSchema = yup.object().shape({
 export const ActivateAccount = () => {
   const { token } = useParams<{ token: string }>();
   const [loading, setLoading] = useState(false);
-  const [countdown, setCountdown] = useState(3);
-  const [success, setSuccess] = useState(false);
   const showAlert = useAlertStore((state) => state.showAlert);
   const navigate = useNavigate();
 
@@ -45,25 +43,6 @@ export const ActivateAccount = () => {
     resolver: yupResolver(activationSchema),
     defaultValues: { password: "", confirmPassword: "" },
   });
-
-  useEffect(() => {
-    // Countdown logic
-    const timer = setInterval(() => {
-      setCountdown((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    if (countdown === 0 && success) {
-      navigate("/login");
-    }
-
-    return () => clearInterval(timer);
-  }, []);
 
   const onSubmit = async (data: { password: string }) => {
     try {
@@ -80,8 +59,9 @@ export const ActivateAccount = () => {
         "success",
         "Cuenta activada exitosamente, serás redirigido al inicio de sesión."
       );
-
-      setSuccess(true);
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Error al activar la cuenta";
@@ -199,17 +179,6 @@ export const ActivateAccount = () => {
             aquí
           </Button>
         </Typography>
-        {success && (
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            sx={{ mt: 2, fontSize: "0.875rem" }}
-          >
-            Serás redirigido al inicio de sesión en <strong>{countdown}</strong>{" "}
-            segundo{countdown !== 1 ? "s" : ""}.
-          </Typography>
-        )}
       </Paper>
     </Container>
   );

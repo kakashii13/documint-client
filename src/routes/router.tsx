@@ -16,6 +16,7 @@ import { RestorePassword } from "../pages/RestorePassword";
 import Landing from "../pages/Landing";
 import { FormSendedPage } from "../pages/Success";
 import { Account } from "../pages/Account";
+import { NotFound } from "../pages/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -127,5 +128,12 @@ export const router = createBrowserRouter([
         <CreateAdvisorForm />
       </ProtectedRoute>
     ),
+  },
+  /* ------------------------------------------------------------- */
+  /* 404: debe ir al FINAL de la configuración (por claridad)       */
+  /* ------------------------------------------------------------- */
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
