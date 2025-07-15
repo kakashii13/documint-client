@@ -82,8 +82,13 @@ export default function Form() {
       });
 
       // Adjuntos
-      if (data.adjuntos && Array.isArray(data.adjuntos)) {
-        data.adjuntos.forEach((file: File) => {
+      if (data.adjuntos) {
+        // Convierte FileList → Array
+        const files = Array.isArray(data.adjuntos)
+          ? data.adjuntos
+          : Array.from(data.adjuntos as FileList);
+
+        files.forEach((file) => {
           formData.append("adjuntos", file);
         });
       }
@@ -93,12 +98,11 @@ export default function Form() {
         formData
       );
 
-      setLoading(false);
-
       setTimeout(() => {
         setDeleteSignature(true);
         reset();
         setIsConfirmForm(undefined);
+        setLoading(false);
         navigate(`/form-submitted/${response.data.referenceNumber}`);
       }, 3000);
     } catch (error) {
