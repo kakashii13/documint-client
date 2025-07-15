@@ -6,12 +6,12 @@ import { formFields } from "../utils/fields";
 import CargaFamiliar from "./FamilyInputs";
 import AttachFiles from "./AttachFiles";
 import { useEffect, useState } from "react";
-import { Signature } from "./Signature";
 import { ConfirmForm } from "./ConfirmForm";
 import { FormFields } from "./FormFields";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
 import { useGetAdvisor } from "../features/advisors/hooks/useGetAdvisor";
+import { Signature } from "./Signature";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -155,7 +155,7 @@ export default function Form() {
                 Firma del solicitante
               </Typography>
               <Signature
-                onFirmaChange={(dataUrl) => field.onChange(dataUrl)}
+                onFirmaChange={(dataUrl: string) => field.onChange(dataUrl)}
                 removeOnClick={deleteSignature}
               />
 
