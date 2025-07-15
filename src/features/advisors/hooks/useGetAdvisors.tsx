@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { useAuthStore } from "../../hooks/useAuthStore";
-import advisorApi from "../advisors/services/advisorApi";
-import { useAlertStore } from "../../hooks/useAlertStore";
+import { useAuthStore } from "../../../hooks/useAuthStore";
+import advisorApi from "../services/advisorApi";
+import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const useGetAdvisors = (userId: number) => {
   const [advisors, setAdvisors] = useState([]);

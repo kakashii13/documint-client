@@ -30,9 +30,14 @@ type FormFieldsProps = {
   formFields: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   control: any;
+  advisorFixed?: boolean;
 };
 
-export const FormFields = ({ formFields, control }: FormFieldsProps) => {
+export const FormFields = ({
+  formFields,
+  control,
+  advisorFixed,
+}: FormFieldsProps) => {
   const watchedValues = useWatch({ control });
 
   return (
@@ -53,7 +58,9 @@ export const FormFields = ({ formFields, control }: FormFieldsProps) => {
           const watchValue = dependsOn
             ? watchedValues[dependsOn as keyof typeof watchedValues]
             : true;
-          const isDisabled = dependsOn && !watchValue;
+          const isDisabled =
+            (name === "asesor" && advisorFixed) || // ✔
+            (dependsOn && !watchValue);
 
           return (
             <Grid key={name} size={{ xs: xs || 12, sm: sm || 6, md: md || 4 }}>

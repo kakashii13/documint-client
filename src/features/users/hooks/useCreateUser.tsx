@@ -6,7 +6,6 @@ import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
-  const user = useAuthStore((state: any) => state.user);
   const token = useAuthStore((state: any) => state.token);
   const showAlert = useAlertStore((state) => state.showAlert);
   const navigate = useNavigate();

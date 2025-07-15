@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Welcome } from "../components/Welcome";
 import { MainLayout } from "../layout/MainLayout";
 import { AdvisorManager } from "../features/advisors/components/AdvisorManager";
-import { useGetAdvisors } from "../features/hooks/useGetAdvisors";
+import { useGetAdvisors } from "../features/advisors/hooks/useGetAdvisors";
 
 export const ClientUserDashboard = () => {
   const user = useAuthStore((state: any) => state.user);

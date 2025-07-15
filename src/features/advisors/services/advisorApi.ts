@@ -12,6 +12,15 @@ const advisorApi = {
     }
   },
 
+  getAdvisorBySlug: async (advisorSlug: string) => {
+    try {
+      const response = await apiService.get(`/advisors/slug/${advisorSlug}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  },
+
   createAdvisor: async (userId: number, advisorData: any, token: string) => {
     try {
       const response = await apiService.post(

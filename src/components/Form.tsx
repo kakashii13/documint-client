@@ -5,12 +5,13 @@ import formSchema from "../utils/validation";
 import { formFields } from "../utils/fields";
 import CargaFamiliar from "./carga-familiar";
 import AdjuntarArchivos from "./adjuntar-archivo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Firma } from "./signature";
 import { ConfirmForm } from "./confirm-form";
-import { FormFields } from "./form-fields";
+import { FormFields } from "./FormFields";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
+import { useGetAdvisor } from "../features/advisors/hooks/useGetAdvisor";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
   const d = new Date(date);
@@ -30,6 +31,9 @@ const isValidDateString = (value: unknown): boolean => {
 
 export default function Form() {
   const { slug } = useParams();
+  const { advisor } = useGetAdvisor(slug || "");
+  const [isAdvisorFixed, setIsAdvisorFixed] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [isConfirmForm, setIsConfirmForm] = useState<boolean | undefined>(
     undefined
@@ -37,7 +41,7 @@ export default function Form() {
   const [deleteSignature, setDeleteSignature] = useState(false);
   const navigate = useNavigate();
 
-  const { control, handleSubmit, reset } = useForm({
+  const { control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       ...Object.fromEntries(
         formFields.map((f) => [f.name, f.type === "checkbox" ? null : ""])
@@ -48,6 +52,14 @@ export default function Form() {
     },
     resolver: yupResolver(formSchema),
   });
+
+  useEffect(() => {
+    if (advisor) {
+      // Si el asesor tiene un nombre, lo asignamos al campo correspondiente
+      setValue("asesor", advisor);
+      setIsAdvisorFixed(true);
+    }
+  }, [advisor, setValue]);
 
   const onSubmit = async (data: Record<string, any>) => {
     try {
@@ -120,7 +132,11 @@ export default function Form() {
           Datos personales
         </Typography>
 
-        <FormFields control={control} formFields={formFields} />
+        <FormFields
+          control={control}
+          formFields={formFields}
+          advisorFixed={isAdvisorFixed}
+        />
 
         <CargaFamiliar control={control} />
 
