@@ -63,7 +63,7 @@ export const Account = () => {
     control: passControl,
     handleSubmit: submitPassword,
     watch,
-    formState: { errors: passErrors, isSubmitting: passSubmitting },
+    formState: { isSubmitting: passSubmitting },
   } = useForm<PasswordValues>({
     defaultValues: { current: "", new: "", confirm: "" },
   });
