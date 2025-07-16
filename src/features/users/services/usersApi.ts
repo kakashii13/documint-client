@@ -8,9 +8,7 @@ const usersApi = {
       });
       return response.data;
     } catch (error: any) {
-      throw new Error(
-        error.response?.data?.message || "Error al obtener los usuarios"
-      );
+      throw error;
     }
   },
   deleteUser: async (clientId: number, userId: number, token: string) => {
@@ -23,9 +21,7 @@ const usersApi = {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(
-        error.response?.data?.message || "Error al eliminar el usuario"
-      );
+      throw error;
     }
   },
 
@@ -40,9 +36,18 @@ const usersApi = {
       );
       return response.data;
     } catch (error: any) {
-      throw new Error(
-        error.response?.data?.message || "Error al crear el usuario"
-      );
+      throw error;
+    }
+  },
+
+  updateUser: async (user: any, token: string) => {
+    try {
+      const response = await apiService.put(`/users/${user.userId}`, user, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error: any) {
+      throw error;
     }
   },
 };
