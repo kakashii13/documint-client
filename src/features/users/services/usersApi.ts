@@ -50,6 +50,27 @@ const usersApi = {
       throw error;
     }
   },
+
+  updatePassword: async (
+    data: { userId: number; currentPassword: string; newPassword: string },
+    token: string
+  ) => {
+    try {
+      const response = await apiService.patch(
+        `/users/${data.userId}/password`,
+        {
+          currentPassword: data.currentPassword,
+          newPassword: data.newPassword,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  },
 };
 
 export default usersApi;

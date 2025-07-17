@@ -18,11 +18,15 @@ import { MainLayout } from "../layout/MainLayout";
 import { useForm, Controller } from "react-hook-form";
 import usersApi from "../features/users/services/usersApi";
 import { useAlertStore } from "../hooks/useAlertStore";
+import { useState } from "react";
 
 type ProfileValues = { name: string; email?: string };
 type PasswordValues = { current: string; new: string; confirm: string };
 
 export const Account = () => {
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [loadingPassword, setLoadingPassword] = useState(false);
+
   const { user, setUser } = useAuthStore((s) => s);
   const token = useAuthStore((s) => s.token);
   const showAlert = useAlertStore((s) => s.showAlert);
@@ -38,6 +42,7 @@ export const Account = () => {
 
   const handleSaveProfile = async (data: ProfileValues) => {
     try {
+      setLoadingUser(true);
       const dataToSend = {
         name: data.name,
         email: data.email,
@@ -48,13 +53,14 @@ export const Account = () => {
       const updatedUser = response.user;
 
       setUser(updatedUser);
-      console.log("Profile updated:", response);
       showAlert("success", "Perfil actualizado correctamente");
+      setLoadingUser(false);
     } catch (error: any) {
       console.log(error);
       const errorMessage =
         error?.response?.data?.message || "Error al guardar el perfil";
       showAlert("error", errorMessage);
+      setLoadingUser(false);
     }
   };
 
@@ -64,13 +70,31 @@ export const Account = () => {
     handleSubmit: submitPassword,
     watch,
     formState: { isSubmitting: passSubmitting },
+    reset,
   } = useForm<PasswordValues>({
     defaultValues: { current: "", new: "", confirm: "" },
   });
 
-  const handleChangePassword = (data: PasswordValues) => {
-    console.log("Change password →", data);
-    // ...request al backend, etc.
+  const handleChangePassword = async (data: PasswordValues) => {
+    try {
+      setLoadingPassword(true);
+      const dataToSend = {
+        userId: user?.id || 0,
+        currentPassword: data.current,
+        newPassword: data.new,
+      };
+      await usersApi.updatePassword(dataToSend, token ?? "");
+
+      showAlert("success", "Contraseña actualizada correctamente");
+      setLoadingPassword(false);
+      reset();
+    } catch (error: any) {
+      console.log(error);
+      const errorMessage =
+        error?.response?.data?.message || "Error al cambiar la contraseña";
+      showAlert("error", errorMessage);
+      setLoadingPassword(false);
+    }
   };
 
   // Validación de confirmación de contraseña ― simple y local
@@ -178,6 +202,7 @@ export const Account = () => {
                 variant="contained"
                 sx={{ mt: 3 }}
                 disabled={!profileDirty}
+                loading={loadingUser}
               >
                 Guardar cambios
               </Button>
@@ -269,6 +294,7 @@ export const Account = () => {
                 variant="outlined"
                 sx={{ mt: 3, alignSelf: { xs: "stretch", sm: "flex-start" } }}
                 disabled={passSubmitting}
+                loading={loadingPassword}
               >
                 Actualizar contraseña
               </Button>
