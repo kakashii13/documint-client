@@ -64,6 +64,7 @@ const usersApi = {
         },
         {
           headers: { Authorization: `Bearer ${token}` },
+          withCredentials: true,
         }
       );
       return response.data;

@@ -29,6 +29,7 @@ export const Account = () => {
 
   const { user, setUser } = useAuthStore((s) => s);
   const token = useAuthStore((s) => s.token);
+  const setToken = useAuthStore((s) => s.setToken);
   const showAlert = useAlertStore((s) => s.showAlert);
 
   /* ————————————  PROFILE FORM  ———————————— */
@@ -83,8 +84,8 @@ export const Account = () => {
         currentPassword: data.current,
         newPassword: data.new,
       };
-      await usersApi.updatePassword(dataToSend, token ?? "");
-
+      const response = await usersApi.updatePassword(dataToSend, token ?? "");
+      setToken(response.token);
       showAlert("success", "Contraseña actualizada correctamente");
       setLoadingPassword(false);
       reset();

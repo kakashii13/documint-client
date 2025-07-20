@@ -18,6 +18,7 @@ import { useAuthStore } from "../hooks/useAuthStore";
 import logo_marca from "../assets/logo_marca.png";
 import { useAlertStore } from "../hooks/useAlertStore";
 import { MainLayout } from "../layout/MainLayout";
+import { PasswordInput } from "../components/PasswordInput";
 
 const loginSchema = yup.object().shape({
   // Esquema de validación para Login\const loginSchema = yup.object().shape({
@@ -51,7 +52,8 @@ export const Login = () => {
 
       const response = await apiService.post(
         `${import.meta.env.VITE_API_URL}/login`,
-        { dataUser: user }
+        { dataUser: user },
+        { withCredentials: true }
       );
 
       const responseData = response.data;
@@ -126,15 +128,13 @@ export const Login = () => {
               control={control}
               rules={{ required: "La contraseña es obligatoria" }}
               render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
+                <PasswordInput
+                  name="password"
                   label="Contraseña"
-                  type="password"
-                  margin="normal"
-                  autoComplete="current-password"
-                  error={!!errors.password}
-                  helperText={errors.password?.message}
+                  required
+                  field={field}
+                  fieldState={errors.password}
+                  disabled={isSubmitting || loading}
                 />
               )}
             />
