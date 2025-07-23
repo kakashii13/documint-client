@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Container,
   Box,
@@ -7,6 +7,7 @@ import {
   Typography,
   TextField,
   Button,
+  Divider,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm, Controller } from "react-hook-form";
@@ -19,6 +20,7 @@ import logo_marca from "../assets/logo_marca.png";
 import { useAlertStore } from "../hooks/useAlertStore";
 import { MainLayout } from "../layout/MainLayout";
 import { PasswordInput } from "../components/PasswordInput";
+import { FcGoogle } from "react-icons/fc";
 
 const loginSchema = yup.object().shape({
   // Esquema de validación para Login\const loginSchema = yup.object().shape({
@@ -79,6 +81,19 @@ export const Login = () => {
       setLoading(false);
     }
   };
+
+  const googleLogin = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/auth/google`;
+  };
+
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const error = query.get("error");
+
+    if (error) {
+      showAlert("error", error || "Error al iniciar sesión con Google");
+    }
+  }, []);
 
   return (
     <MainLayout>
@@ -181,6 +196,34 @@ export const Login = () => {
                 mb: 2, // margen inferior
               }}
             />
+          </Box>
+          <Divider sx={{ width: "100%", my: 3 }}>
+            <Typography variant="body2" color="text.secondary">
+              O
+            </Typography>
+          </Divider>
+          <Box>
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<FcGoogle />}
+              sx={{
+                mt: 2,
+                mb: 2,
+                py: 1.2,
+                textTransform: "none",
+                color: "#000",
+                borderColor: "#ccc",
+                "&:hover": {
+                  borderColor: "#aaa",
+                },
+                width: "100%",
+                display: "flex",
+              }}
+              onClick={googleLogin}
+            >
+              Continuar con Google
+            </Button>
           </Box>
         </Paper>
       </Container>

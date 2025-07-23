@@ -17,6 +17,7 @@ import Landing from "../pages/Landing";
 import { FormSendedPage } from "../pages/Success";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
+import LoginSuccess from "../pages/LoginSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +40,10 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/login/success",
+    element: <LoginSuccess />,
   },
   {
     path: "/forgot-password",
