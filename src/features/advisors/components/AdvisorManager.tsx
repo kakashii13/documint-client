@@ -4,15 +4,27 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useAlertStore } from "../../../hooks/useAlertStore";
+import { useState } from "react";
+import { ConfirmAction } from "../../../components/ConfirmAction";
+import advisorApi from "../services/advisorApi";
+import { useGetAdvisors } from "../hooks/useGetAdvisors";
 
 export const AdvisorManager = ({
-  advisors,
   onCreate,
+  userId,
 }: {
-  advisors: any;
   onCreate: () => void;
+  userId: number;
 }) => {
+  const [selectedAdvisor, setSelectedAdvisor] = useState<null | {
+    id: number;
+    name: string;
+  }>(null);
+
+  const { advisors, fetchAdvisors } = useGetAdvisors(userId);
   const showAlert = useAlertStore((state) => state.showAlert);
+  const token = useAlertStore((state: any) => state.token);
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 60 },
     { field: "name", headerName: "Nombre", flex: 1, minWidth: 100 },
@@ -55,22 +67,31 @@ export const AdvisorManager = ({
       width: 100,
       sortable: false,
       renderCell: (params) => (
-        <IconButton
-          size="small"
-          onClick={() => {
-            handleDelete(params.row.id);
-          }}
-        >
-          <DeleteIcon fontSize="small" />
-        </IconButton>
+        <Box>
+          <IconButton
+            size="small"
+            onClick={() =>
+              setSelectedAdvisor({ id: params.row.id, name: params.row.name })
+            }
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Box>
       ),
     },
   ];
 
-  // TODO: Implement delete logic
-  const handleDelete = (id: number) => {
-    // Implement delete logic here
-    console.log(`Delete advisor with ID: ${id}`);
+  const handleDelete = async (advisorId: number) => {
+    try {
+      await advisorApi.deleteAdvisor(Number(userId), advisorId, token);
+
+      showAlert("success", "Asesor eliminado correctamente");
+      fetchAdvisors();
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.message || "Error al eliminar el asesor";
+      showAlert("error", errorMessage);
+    }
   };
   return (
     <Box height={400}>
@@ -93,6 +114,19 @@ export const AdvisorManager = ({
         //   disableSelectionOnClick
         autoHeight
       />
+      {selectedAdvisor && (
+        <ConfirmAction
+          open={!!selectedAdvisor}
+          setOpen={(open) => {
+            if (!open) setSelectedAdvisor(null);
+          }}
+          textConfirmation={`¿Estás seguro de que deseas eliminar al asesor ${selectedAdvisor.name}?`}
+          onConfirm={() => {
+            handleDelete(selectedAdvisor.id);
+            setSelectedAdvisor(null);
+          }}
+        />
+      )}
     </Box>
   );
 };

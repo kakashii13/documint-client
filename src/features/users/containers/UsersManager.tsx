@@ -12,6 +12,10 @@ export const UsersManager = ({ clientId }: { clientId: number }) => {
   const { users, fetchUsers } = useGetUsers(clientId || 0);
   const showAlert = useAlertStore((state) => state.showAlert);
 
+  // remove self user from the list
+  const currentUserId = useAuthStore((s: any) => s.user?.id);
+  const filteredUsers = users.filter((user: any) => user.id !== currentUserId);
+
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -42,7 +46,7 @@ export const UsersManager = ({ clientId }: { clientId: number }) => {
   return (
     <Box>
       <UsersTable
-        users={users}
+        users={filteredUsers}
         loading={loading}
         onDelete={handleDeleteUser}
         onCreate={handleCreateUser}

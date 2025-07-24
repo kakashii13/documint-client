@@ -5,6 +5,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { CreateButton } from "../../../components/ui/CreateButton";
+import { ConfirmAction } from "../../../components/ConfirmAction";
+import { useState } from "react";
 
 type User = {
   id: number;
@@ -27,6 +29,7 @@ export const UsersTable = ({
   onDelete: (id: number) => void;
   onNavigateAdvisors: (userId: number) => void;
 }) => {
+  const [selectedUser, setSelectedUser] = useState<null | User>(null);
   const columns: GridColDef[] = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "name", headerName: "Nombre", flex: 1, minWidth: 150 },
@@ -55,7 +58,7 @@ export const UsersTable = ({
         <Box>
           <IconButton
             size="small"
-            onClick={() => onDelete(params.row.id)}
+            onClick={() => setSelectedUser(params.row)}
             loading={loading}
           >
             <DeleteIcon fontSize="small" />
@@ -84,6 +87,19 @@ export const UsersTable = ({
       <Box height={400}>
         <DataGrid rows={users} columns={columns} autoHeight />
       </Box>
+      {selectedUser && (
+        <ConfirmAction
+          open={!!selectedUser}
+          setOpen={(open) => {
+            if (!open) setSelectedUser(null);
+          }}
+          textConfirmation={`¿Estás seguro de que deseas eliminar al usuario ${selectedUser.name}?`}
+          onConfirm={() => {
+            onDelete(selectedUser.id);
+            setSelectedUser(null);
+          }}
+        />
+      )}
     </Box>
   );
 };

@@ -4,11 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Welcome } from "../components/Welcome";
 import { MainLayout } from "../layout/MainLayout";
 import { AdvisorManager } from "../features/advisors/components/AdvisorManager";
-import { useGetAdvisors } from "../features/advisors/hooks/useGetAdvisors";
 
 export const ClientUserDashboard = () => {
   const user = useAuthStore((state: any) => state.user);
-  const { advisors } = useGetAdvisors(user.id);
   const navigate = useNavigate();
 
   return (
@@ -17,12 +15,12 @@ export const ClientUserDashboard = () => {
         <Welcome />
 
         <AdvisorManager
-          advisors={advisors || []}
           onCreate={() => {
             navigate(
               `/client-detail/${user?.clientId}/user/${user?.id}/create-advisor`
             );
           }}
+          userId={user.id}
         />
       </Container>
     </MainLayout>

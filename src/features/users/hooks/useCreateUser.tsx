@@ -6,6 +6,7 @@ import { useAlertStore } from "../../../hooks/useAlertStore";
 
 export const useCreateUser = () => {
   const [loading, setLoading] = useState(false);
+  const userLogged = useAuthStore((state: any) => state.user);
   const token = useAuthStore((state: any) => state.token);
   const showAlert = useAlertStore((state) => state.showAlert);
   const navigate = useNavigate();
@@ -30,9 +31,9 @@ export const useCreateUser = () => {
       showAlert("success", "Usuario creado correctamente");
 
       setTimeout(() => {
-        if (user.role == "admin") {
+        if (userLogged.role == "admin") {
           navigate(`/client-detail/${clientId}`);
-        } else if (user.role == "admin-client") {
+        } else if (userLogged.role == "admin-client") {
           navigate(`/client-panel/${clientId}`);
         } else {
           navigate(`/client-user-panel/${clientId}`);

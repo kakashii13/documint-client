@@ -6,9 +6,11 @@ import { ConfirmAction } from "./ConfirmAction";
 export const DeleteButton = ({
   onConfirm,
   loading,
+  text = "Eliminar cliente",
 }: {
   onConfirm: () => void;
   loading: boolean;
+  text?: string;
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -23,7 +25,7 @@ export const DeleteButton = ({
         startIcon={<DeleteIcon />}
         loading={loading}
       >
-        Eliminar cliente
+        {text}
       </Button>
 
       <ConfirmAction
