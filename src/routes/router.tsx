@@ -18,11 +18,20 @@ import { FormSendedPage } from "../pages/Success";
 import { Account } from "../pages/Account";
 import { NotFound } from "../pages/NotFound";
 import LoginSuccess from "../pages/LoginSuccess";
+import Settings from "../pages/Settings";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Landing />,
+  },
+  {
+    path: "/settings",
+    element: (
+      <ProtectedRoute allowedRoles={["client", "admin", "admin-client"]}>
+        <Settings />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/form/:slug",
