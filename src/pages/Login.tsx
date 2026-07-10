@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import {
-  Container,
   Box,
   Paper,
-  Avatar,
   Typography,
   TextField,
   Button,
   Divider,
+  Stack,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,7 +21,6 @@ import { PasswordInput } from "../components/PasswordInput";
 import { FcGoogle } from "react-icons/fc";
 
 const loginSchema = yup.object().shape({
-  // Esquema de validación para Login\const loginSchema = yup.object().shape({
   email: yup.string().email("Email inválido").required("El email es requerido"),
   password: yup.string().required("La contraseña es requerida"),
 });
@@ -47,37 +44,29 @@ export const Login = () => {
   const onSubmit = async (data: { email: string; password: string }) => {
     try {
       setLoading(true);
-      const user = {
-        email: data.email,
-        password: data.password,
-      };
-
       const response = await apiService.post(
         `${import.meta.env.VITE_API_URL}/login`,
-        { dataUser: user },
+        { dataUser: { email: data.email, password: data.password } },
         { withCredentials: true }
       );
 
       const responseData = response.data;
-      const responseToken = responseData.token;
-      const responseUser = responseData.user;
-      // console.log(response.data);
+      setToken(responseData.token);
+      setUser(responseData.user);
       setLoading(false);
-      setToken(responseToken);
-      setUser(responseUser);
 
-      if (responseUser?.role === "admin") {
+      if (responseData.user?.role === "admin") {
         navigate("/admin-panel");
-      } else if (responseUser?.role === "admin-client") {
-        navigate(`/client-panel/${responseUser?.clientId}`);
+      } else if (responseData.user?.role === "admin-client") {
+        navigate(`/client-panel/${responseData.user?.clientId}`);
       } else {
-        navigate(`/client-user-panel/${responseUser?.clientId}`);
+        navigate(`/client-user-panel/${responseData.user?.clientId}`);
       }
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Error al iniciar sesión";
-      console.error("Error al iniciar sesión:", errorMessage);
-      showAlert("error", errorMessage);
+      showAlert(
+        "error",
+        error.response?.data?.message || "Error al iniciar sesión"
+      );
       setLoading(false);
     }
   };
@@ -87,146 +76,129 @@ export const Login = () => {
   };
 
   useEffect(() => {
-    const query = new URLSearchParams(window.location.search);
-    const error = query.get("error");
-
-    if (error) {
-      showAlert("error", error || "Error al iniciar sesión con Google");
-    }
+    const error = new URLSearchParams(window.location.search).get("error");
+    if (error) showAlert("error", error || "Error al iniciar sesión con Google");
   }, []);
 
   return (
     <MainLayout>
-      <Container maxWidth="xs">
-        <Paper
-          elevation={6}
-          sx={{
-            mt: 8,
-            p: 4,
-            borderRadius: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Iniciar Sesión
-          </Typography>
-
-          <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{ width: "100%" }}
-          >
-            <Controller
-              name="email"
-              control={control}
-              rules={{ required: "El email es obligatorio" }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Email"
-                  margin="normal"
-                  autoComplete="email"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                />
-              )}
-            />
-
-            <Controller
-              name="password"
-              control={control}
-              rules={{ required: "La contraseña es obligatoria" }}
-              render={({ field }) => (
-                <PasswordInput
-                  name="password"
-                  label="Contraseña"
-                  required
-                  field={field}
-                  fieldState={errors.password}
-                  disabled={isSubmitting || loading}
-                />
-              )}
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              disabled={isSubmitting || loading}
-              sx={{
-                mt: 3,
-                mb: 2,
-                py: 1.2,
-                textTransform: "none",
-                fontWeight: "bold",
-                background:
-                  "linear-gradient(135deg, #6B73FF 0%,rgb(0, 119, 255) 100%)",
-                color: "white",
-                "&:hover": {
-                  background:
-                    "linear-gradient(135deg, #5A62E5 0%, #000BCC 100%)",
-                },
-              }}
-            >
-              {loading ? "Ingresando..." : "Entrar"}
-            </Button>
-
-            <Box textAlign="center">
-              <Link to="/forgot-password" style={{ textDecoration: "none" }}>
-                <Typography variant="body2" color="#1976D2">
-                  ¿Olvidaste tu contraseña?
-                </Typography>
-              </Link>
-            </Box>
-            {/* Logo de Documint */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 6,
+          px: 2,
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: 420 }}>
+          {/* Logo */}
+          <Box textAlign="center" mb={4}>
             <Box
               component="img"
               src={logo_marca}
-              alt="Documint Logo"
-              sx={{
-                display: "block",
-                mx: "auto", // centra horizontalmente
-                width: 120, // ajusta al tamaño deseado
-                mt: 4, // margen superior
-                mb: 2, // margen inferior
-              }}
+              alt="Documint"
+              sx={{ height: 44 }}
             />
           </Box>
-          <Divider sx={{ width: "100%", my: 3 }}>
-            <Typography variant="body2" color="text.secondary">
-              O
+
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, sm: 4 },
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Typography
+              variant="h5"
+              fontWeight={700}
+              textAlign="center"
+              mb={0.5}
+            >
+              Iniciar sesión
             </Typography>
-          </Divider>
-          <Box>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+              mb={3}
+            >
+              Ingresá tus credenciales para continuar
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={2}>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Email"
+                      autoComplete="email"
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
+                    />
+                  )}
+                />
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <PasswordInput
+                      name="password"
+                      label="Contraseña"
+                      required
+                      field={field}
+                      fieldState={errors.password}
+                      disabled={isSubmitting || loading}
+                    />
+                  )}
+                />
+              </Stack>
+
+              <Box textAlign="right" mt={1}>
+                <Link to="/forgot-password" style={{ textDecoration: "none" }}>
+                  <Typography variant="caption" color="primary">
+                    ¿Olvidaste tu contraseña?
+                  </Typography>
+                </Link>
+              </Box>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                disabled={isSubmitting || loading}
+                loading={loading}
+                sx={{ mt: 2.5, py: 1.4 }}
+              >
+                {loading ? "Ingresando…" : "Entrar"}
+              </Button>
+            </Box>
+
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="caption" color="text.secondary">
+                o continuá con
+              </Typography>
+            </Divider>
+
             <Button
               variant="outlined"
               fullWidth
-              startIcon={<FcGoogle />}
-              sx={{
-                mt: 2,
-                mb: 2,
-                py: 1.2,
-                textTransform: "none",
-                color: "#000",
-                borderColor: "#ccc",
-                "&:hover": {
-                  borderColor: "#aaa",
-                },
-                width: "100%",
-                display: "flex",
-              }}
+              startIcon={<FcGoogle size={18} />}
               onClick={googleLogin}
+              sx={{ py: 1.2, borderColor: "divider", color: "text.primary" }}
             >
               Continuar con Google
             </Button>
-          </Box>
-        </Paper>
-      </Container>
+          </Paper>
+        </Box>
+      </Box>
     </MainLayout>
   );
 };

@@ -1,20 +1,25 @@
 import { Box, Typography } from "@mui/material";
-import hand from "../assets/hand.png";
 import { useAuthStore } from "../hooks/useAuthStore";
 
-export const Welcome = () => {
-  const user = useAuthStore((state: any) => state.user);
-  return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      my={2}
-      width={"100%"}
-    >
-      <Typography variant="h5">{`Hola ${user?.name}`}</Typography>
+type Props = {
+  title?: string;
+  subtitle?: string;
+};
 
-      <img src={hand} alt="Hand icon" style={{ height: 25, marginLeft: 8 }} />
+export const Welcome = ({ title, subtitle }: Props) => {
+  const user = useAuthStore((state: any) => state.user);
+  const displayTitle = title ?? `Hola, ${user?.name}`;
+
+  return (
+    <Box py={3} mb={1}>
+      <Typography variant="h5" fontWeight={700} color="text.primary">
+        {displayTitle}
+      </Typography>
+      {subtitle && (
+        <Typography variant="body2" color="text.secondary" mt={0.5}>
+          {subtitle}
+        </Typography>
+      )}
     </Box>
   );
 };

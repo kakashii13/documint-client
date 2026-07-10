@@ -58,7 +58,6 @@ const formSchema = yup.object().shape({
     )
     .required("Campo obligatorio"),
   provincia: yup.string().required("Campo obligatorio"),
-  claveFiscal: yup.string().required("Campo obligatorio"),
   email: yup
     .string()
     .email("Debe ser un correo electrónico válido")

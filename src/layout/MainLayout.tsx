@@ -3,9 +3,16 @@ import { TopBar } from "../components/TopBar";
 
 export const MainLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        bgcolor: "background.default",
+      }}
+    >
       <TopBar />
-      {children}
+      <Box flex={1}>{children}</Box>
     </Box>
   );
 };

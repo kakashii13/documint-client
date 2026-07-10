@@ -1,21 +1,13 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Stack, TextField, Typography } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import logo_marca from "../assets/logo_marca.png";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAlertStore } from "../hooks/useAlertStore";
 import apiService from "../services/api";
-import { TopBar } from "../components/TopBar";
+import { MainLayout } from "../layout/MainLayout";
 
 const resetSchema = yup.object().shape({
   email: yup
@@ -41,113 +33,106 @@ export const ForgotPassword = () => {
   const onSubmit = async (data: { email: string }) => {
     try {
       setLoading(true);
-      await apiService.post("/request-reset", {
-        email: data.email,
-      });
-
+      await apiService.post("/request-reset", { email: data.email });
       showAlert(
         "success",
-        "Enlace de restablecimiento enviado con éxito. Revisa tu correo electrónico."
+        "Enlace de restablecimiento enviado. Revisá tu correo."
       );
       setLoading(false);
       reset();
     } catch (error: any) {
-      const errorMessage =
+      showAlert(
+        "error",
         error.response?.data?.message ||
-        "Error al enviar el enlace de restablecimiento";
-      showAlert("error", errorMessage);
+          "Error al enviar el enlace de restablecimiento"
+      );
       setLoading(false);
     }
   };
 
   return (
-    <Box>
-      <TopBar />
-      <Container maxWidth="xs">
-        <Paper
-          elevation={6}
-          sx={{
-            mt: 8,
-            p: 4,
-            borderRadius: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
-            Restablecer contraseña
-          </Typography>
-
-          <Typography variant="body2" sx={{ mb: 2, textAlign: "center" }}>
-            Ingresa tu correo electrónico para recibir un enlace de
-            restablecimiento de contraseña.
-          </Typography>
-
-          <Box
-            component="form"
-            onSubmit={handleSubmit(onSubmit)}
-            sx={{ width: "100%" }}
-          >
-            <Controller
-              name="email"
-              control={control}
-              rules={{ required: "El email es obligatorio" }}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="Email"
-                  margin="normal"
-                  autoComplete="email"
-                  error={!!errors.email}
-                  helperText={errors.email?.message}
-                />
-              )}
-            />
-
-            <Button
-              type="submit"
-              fullWidth
-              disabled={isSubmitting || loading}
-              sx={{
-                mt: 3,
-                mb: 2,
-                py: 1.2,
-                textTransform: "none",
-                fontWeight: "bold",
-                background:
-                  "linear-gradient(135deg, #6B73FF 0%,rgb(0, 119, 255) 100%)",
-                color: "white",
-                "&:hover": {
-                  background:
-                    "linear-gradient(135deg, #5A62E5 0%, #000BCC 100%)",
-                },
-              }}
-              loading={loading}
-            >
-              Enviar email
-            </Button>
-
-            {/* Logo de Documint */}
+    <MainLayout>
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 6,
+          px: 2,
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: 420 }}>
+          <Box textAlign="center" mb={4}>
             <Box
               component="img"
               src={logo_marca}
-              alt="Documint Logo"
-              sx={{
-                display: "block",
-                mx: "auto",
-                width: 120,
-                mt: 4,
-                mb: 2,
-              }}
+              alt="Documint"
+              sx={{ height: 44 }}
             />
           </Box>
-        </Paper>
-      </Container>
-    </Box>
+
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 3, sm: 4 },
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <Typography variant="h5" fontWeight={700} textAlign="center" mb={0.5}>
+              Recuperar contraseña
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+              mb={3}
+            >
+              Te enviamos un enlace para restablecer tu contraseña.
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={2}>
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Email"
+                      autoComplete="email"
+                      error={!!errors.email}
+                      helperText={errors.email?.message}
+                    />
+                  )}
+                />
+              </Stack>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                disabled={isSubmitting || loading}
+                loading={loading}
+                sx={{ mt: 3, py: 1.4 }}
+              >
+                Enviar enlace
+              </Button>
+            </Box>
+
+            <Box textAlign="center" mt={3}>
+              <Link to="/login" style={{ textDecoration: "none" }}>
+                <Typography variant="body2" color="primary">
+                  ← Volver al inicio de sesión
+                </Typography>
+              </Link>
+            </Box>
+          </Paper>
+        </Box>
+      </Box>
+    </MainLayout>
   );
 };

@@ -109,10 +109,14 @@ export const AdvisorManager = ({
       <DataGrid
         rows={advisors}
         columns={columns}
-        //   pageSize={5}
-        //   rowsPerPageOptions={[5, 10]}
-        //   disableSelectionOnClick
         autoHeight
+        disableRowSelectionOnClick
+        localeText={{
+          noRowsLabel: "No hay asesores registrados.",
+          noResultsOverlayLabel: "Resultados no encontrados.",
+          paginationRowsPerPage: "Filas por página:",
+          footerTotalRows: "Filas totales:",
+        }}
       />
       {selectedAdvisor && (
         <ConfirmAction

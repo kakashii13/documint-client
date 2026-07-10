@@ -8,16 +8,14 @@ import {
   Box,
   Typography,
   Button,
+  Avatar,
+  Divider,
 } from "@mui/material";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LoginIcon from "@mui/icons-material/Login";
-
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
-
 import logo from "../assets/logo_documint.png";
 import { useAuthStore } from "../hooks/useAuthStore";
 
-// Rutas que se consideran "flow de auth"
 const AUTH_ROUTES = ["/login", "/forgot-password", "/reset-password"];
 
 export const TopBar = () => {
@@ -26,19 +24,26 @@ export const TopBar = () => {
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
 
-  /** ------------------------ 1. BARRA PARA AUTH FLOW ---------------------- */
   const isAuthFlow =
     pathname === "/" || AUTH_ROUTES.some((r) => pathname.startsWith(r));
+
+  /** Auth / landing navbar */
   if (isAuthFlow) {
     return (
-      <AppBar position="static" sx={{ background: "#f5f7fa" }} elevation={0}>
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          {/* Logo → Home */}
-          <IconButton component={RouterLink} to="/" disableRipple>
-            <img src={logo} alt="Documint" height={32} />
+      <AppBar
+        position="static"
+        elevation={0}
+        sx={{
+          bgcolor: "background.paper",
+          borderBottom: "1px solid",
+          borderColor: "divider",
+        }}
+      >
+        <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
+          <IconButton component={RouterLink} to="/" disableRipple sx={{ p: 0 }}>
+            <img src={logo} alt="Documint" height={36} />
           </IconButton>
 
-          {/* Botón “Iniciar sesión” (oculto si ya estás en /login) */}
           {pathname !== "/login" && (
             <Button
               component={RouterLink}
@@ -55,7 +60,7 @@ export const TopBar = () => {
     );
   }
 
-  /** --------------------- 2. BARRA PARA USUARIO LOGUEADO ------------------ */
+  /** Logged-in navbar */
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const openMenu = (e: React.MouseEvent<HTMLElement>) =>
     setAnchorEl(e.currentTarget);
@@ -65,54 +70,112 @@ export const TopBar = () => {
     if (user?.role === "admin") navigate("/admin-panel");
     else if (user?.role === "admin-client")
       navigate(`/client-panel/${user?.clientId}`);
-    else navigate("/user-panel");
+    else navigate(`/client-user-panel/${user?.clientId}`);
   };
 
+  const initials = user?.name
+    ?.split(" ")
+    .slice(0, 2)
+    .map((w: string) => w[0])
+    .join("")
+    .toUpperCase() ?? "U";
+
   return (
-    <AppBar position="static" elevation={1} sx={{ bgcolor: "primary.main" }}>
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        {/* Logo + nombre */}
+    <AppBar
+      position="sticky"
+      elevation={0}
+      sx={{
+        bgcolor: "background.paper",
+        borderBottom: "1px solid",
+        borderColor: "divider",
+        color: "text.primary",
+        top: 0,
+        zIndex: (t) => t.zIndex.appBar,
+      }}
+    >
+      <Toolbar sx={{ justifyContent: "space-between", minHeight: 64 }}>
+        {/* Logo + brand */}
         <Box
           onClick={handleNavigateHome}
           display="flex"
           alignItems="center"
-          px={1}
+          gap={1}
           sx={{
             cursor: "pointer",
-            "&:hover": { bgcolor: "rgba(255,255,255,0.08)", borderRadius: 1 },
+            px: 1,
+            py: 0.5,
+            borderRadius: 2,
+            "&:hover": { bgcolor: "action.hover" },
           }}
         >
-          <img src={logo} alt="Logo" style={{ height: 40, marginRight: 8 }} />
-          <Typography variant="h6" color="#fff" noWrap>
+          <img src={logo} alt="Documint" style={{ height: 32 }} />
+          <Typography
+            variant="subtitle1"
+            fontWeight={700}
+            color="primary.main"
+            noWrap
+          >
             Documint
           </Typography>
         </Box>
 
-        {/* Menu “…” */}
-        <IconButton onClick={openMenu} size="small">
-          <MoreHorizIcon sx={{ color: "#fff" }} />
+        {/* User avatar menu */}
+        <IconButton
+          onClick={openMenu}
+          size="small"
+          sx={{
+            border: "1.5px solid",
+            borderColor: "divider",
+            borderRadius: 2,
+            p: 0.5,
+          }}
+        >
+          <Avatar
+            sx={{
+              width: 30,
+              height: 30,
+              fontSize: 13,
+              fontWeight: 700,
+              bgcolor: "primary.main",
+            }}
+          >
+            {initials}
+          </Avatar>
         </IconButton>
+
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={closeMenu}
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
           transformOrigin={{ vertical: "top", horizontal: "right" }}
+          slotProps={{ paper: { sx: { mt: 1, minWidth: 180 } } }}
         >
+          <Box px={2} py={1.5}>
+            <Typography variant="body2" fontWeight={600} noWrap>
+              {user?.name}
+            </Typography>
+            <Typography variant="caption" color="text.secondary" noWrap>
+              {user?.email}
+            </Typography>
+          </Box>
+          <Divider />
           <MenuItem
             onClick={() => {
+              closeMenu();
               navigate("/account");
             }}
           >
-            Cuenta
+            Mi cuenta
           </MenuItem>
           <MenuItem
             onClick={() => {
               closeMenu();
               logout();
             }}
+            sx={{ color: "error.main" }}
           >
-            Salir
+            Cerrar sesión
           </MenuItem>
         </Menu>
       </Toolbar>

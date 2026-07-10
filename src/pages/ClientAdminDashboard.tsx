@@ -6,12 +6,11 @@ import { useAuthStore } from "../hooks/useAuthStore";
 
 export const ClientAdminDashboard = () => {
   const user = useAuthStore((s: any) => s.user);
-  const clientId = user?.clientId;
   return (
     <MainLayout>
-      <Container>
-        <Welcome />
-        <UsersManager clientId={clientId || 0} />
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Welcome subtitle="Gestioná los usuarios de tu organización." />
+        <UsersManager clientId={user?.clientId || 0} />
       </Container>
     </MainLayout>
   );

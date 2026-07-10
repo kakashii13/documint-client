@@ -10,7 +10,6 @@ import { ConfirmForm } from "./ConfirmForm";
 import { FormFields } from "./FormFields";
 import { useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
-import { useGetAdvisor } from "../features/advisors/hooks/useGetAdvisor";
 import { Signature } from "./Signature";
 
 const formatDateToDDMMYYYY = (date: string | Date): string => {
@@ -29,9 +28,8 @@ const isValidDateString = (value: unknown): boolean => {
   );
 };
 
-export default function Form() {
+export default function Form({ advisor }: { advisor: string | null }) {
   const { slug } = useParams();
-  const { advisor } = useGetAdvisor(slug || "");
   const [isAdvisorFixed, setIsAdvisorFixed] = useState(false);
 
   const [loading, setLoading] = useState(false);

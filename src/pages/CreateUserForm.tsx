@@ -5,15 +5,17 @@ import {
   TextField,
   Paper,
   Typography,
+  Stack,
   MenuItem,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { TopBar } from "../components/TopBar";
+import { useNavigate, useParams } from "react-router-dom";
+import { MainLayout } from "../layout/MainLayout";
 import { useCreateUser } from "../features/users/hooks/useCreateUser";
 import { useGetRoles } from "../hooks/useGetRoles";
-import { useParams } from "react-router-dom";
 
 const clientSchema = yup.object().shape({
   name: yup.string().required("El nombre es requerido"),
@@ -34,52 +36,38 @@ export const CreateUserForm = () => {
   const { clientId } = useParams();
   const { roles } = useGetRoles();
   const { createUser, loading } = useCreateUser();
+  const navigate = useNavigate();
 
-  const onSubmit = async (data: {
-    name: string;
-    email: string;
-    role: string;
-  }) => {
-    if (!clientId) {
-      console.error("No clientId found in user");
-      return;
-    }
+  const onSubmit = async (data: { name: string; email: string; role: string }) => {
+    if (!clientId) return;
     await createUser(data, Number(clientId));
     reset();
   };
 
   return (
-    <Box>
-      <TopBar />
-      <Container maxWidth="sm">
-        <form onSubmit={handleSubmit(onSubmit)} style={{ width: "100%" }}>
-          <Paper
-            elevation={6}
-            sx={{
-              mt: 8,
-              p: 4,
-              borderRadius: 2,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-                my: 2,
-                p: "10px",
-                width: "100%",
-                borderRadius: "8px",
-              }}
-            >
-              <Typography variant="h5" component="h1" textAlign="center" mb={2}>
-                Crear usuario
-              </Typography>
+    <MainLayout>
+      <Container maxWidth="sm" sx={{ py: 6 }}>
+        <Button
+          startIcon={<ArrowBackIcon />}
+          onClick={() => navigate(-1)}
+          sx={{ mb: 3, color: "text.secondary" }}
+        >
+          Volver
+        </Button>
 
-              {/* Nombre */}
+        <Paper
+          elevation={0}
+          sx={{ p: { xs: 3, sm: 4 }, border: "1px solid", borderColor: "divider" }}
+        >
+          <Typography variant="h5" fontWeight={700} mb={0.5}>
+            Crear usuario
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            Se enviará una invitación por email al nuevo usuario.
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+            <Stack spacing={2.5}>
               <Controller
                 name="name"
                 control={control}
@@ -87,14 +75,13 @@ export const CreateUserForm = () => {
                   <TextField
                     label="Nombre"
                     {...field}
+                    fullWidth
                     error={!!errors.name}
                     helperText={errors.name?.message}
                     required
                   />
                 )}
               />
-
-              {/* Email */}
               <Controller
                 name="email"
                 control={control}
@@ -103,14 +90,13 @@ export const CreateUserForm = () => {
                     label="Email"
                     type="email"
                     {...field}
+                    fullWidth
                     error={!!errors.email}
                     helperText={errors.email?.message}
                     required
                   />
                 )}
               />
-
-              {/* Select de Roles */}
               <Controller
                 name="role"
                 control={control}
@@ -119,6 +105,7 @@ export const CreateUserForm = () => {
                     select
                     label="Rol"
                     {...field}
+                    fullWidth
                     error={!!errors.role}
                     helperText={errors.role?.message}
                     required
@@ -131,19 +118,19 @@ export const CreateUserForm = () => {
                   </TextField>
                 )}
               />
-
               <Button
                 type="submit"
                 variant="contained"
-                color="primary"
+                size="large"
                 loading={loading}
+                sx={{ py: 1.4, mt: 1 }}
               >
                 Enviar invitación
               </Button>
-            </Box>
-          </Paper>
-        </form>
+            </Stack>
+          </Box>
+        </Paper>
       </Container>
-    </Box>
+    </MainLayout>
   );
 };

@@ -166,7 +166,7 @@ export const Account = () => {
                     render={({ field, fieldState }) => (
                       <TextField
                         fullWidth
-                        label="Name"
+                        label="Nombre"
                         {...field}
                         error={!!fieldState.error}
                         helperText={fieldState.error?.message}

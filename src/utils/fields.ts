@@ -418,16 +418,6 @@ const formFields = [
     required: true,
   },
   {
-    name: "claveFiscal",
-    label: "Clave Fiscal",
-    type: "password",
-    xs: 12,
-    sm: 4,
-    md: 4,
-    required: true,
-    maxLength: 20,
-  },
-  {
     name: "email",
     label: "Email",
     type: "email",

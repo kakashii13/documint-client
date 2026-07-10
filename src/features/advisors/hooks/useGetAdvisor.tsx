@@ -4,20 +4,22 @@ import advisorApi from "../services/advisorApi";
 export const useGetAdvisor = (advisorSlug: string) => {
   const [advisor, setAdvisor] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchAdvisor = async () => {
-    if (!advisorSlug) return; // evita fetch en blanco
+    if (!advisorSlug) return;
 
     try {
       setLoading(true);
+      setError(null);
       const response = await advisorApi.getAdvisorBySlug(advisorSlug);
-      setAdvisor(response?.advisor || []);
-      setLoading(false);
-    } catch (error: any) {
-      setLoading(false);
+      setAdvisor(response?.advisor || null);
+    } catch (err: any) {
       const errorMessage =
-        error.response?.data?.message || "Error al obtener los asesores";
-      throw new Error(errorMessage);
+        err.response?.data?.message || "El link de formulario no es válido o no existe.";
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -25,5 +27,5 @@ export const useGetAdvisor = (advisorSlug: string) => {
     fetchAdvisor();
   }, [advisorSlug]);
 
-  return { advisor, loading, fetchAdvisor };
+  return { advisor, loading, error, fetchAdvisor };
 };

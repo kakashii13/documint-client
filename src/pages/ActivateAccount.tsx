@@ -1,21 +1,13 @@
 import { useState } from "react";
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Avatar,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import apiService from "../services/api";
-import VpnKeyOutlinedIcon from "@mui/icons-material/VpnKeyOutlined";
 import logo_marca from "../assets/logo_marca.png";
 import { useAlertStore } from "../hooks/useAlertStore";
+import { MainLayout } from "../layout/MainLayout";
 
 const activationSchema = yup.object().shape({
   password: yup
@@ -47,139 +39,122 @@ export const ActivateAccount = () => {
   const onSubmit = async (data: { password: string }) => {
     try {
       setLoading(true);
-
-      await apiService.post(
-        `${import.meta.env.VITE_API_URL}/activate-account`,
-        { token, password: data.password }
-      );
-
+      await apiService.post(`${import.meta.env.VITE_API_URL}/activate-account`, {
+        token,
+        password: data.password,
+      });
       setLoading(false);
       reset();
-      showAlert(
-        "success",
-        "Cuenta activada exitosamente, serás redirigido al inicio de sesión."
-      );
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
+      showAlert("success", "Cuenta activada. Serás redirigido al inicio de sesión.");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || "Error al activar la cuenta";
-      showAlert("error", errorMessage);
+      showAlert(
+        "error",
+        error.response?.data?.message || "Error al activar la cuenta"
+      );
+      setLoading(false);
     }
   };
 
   return (
-    <Container maxWidth="xs">
-      <Paper
-        elevation={6}
+    <MainLayout>
+      <Box
         sx={{
-          mt: 8,
-          p: 4,
-          borderRadius: 2,
+          flex: 1,
           display: "flex",
-          flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
+          py: 6,
+          px: 2,
         }}
       >
-        <Avatar sx={{ mb: 1, bgcolor: "primary.main" }}>
-          <VpnKeyOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
-          Activar Cuenta
-        </Typography>
-        <Typography variant="subtitle1" sx={{ mb: 3, textAlign: "center" }}>
-          Ingresa tu nueva contraseña para completar la activación.
-        </Typography>
+        <Box sx={{ width: "100%", maxWidth: 420 }}>
+          <Box textAlign="center" mb={4}>
+            <Box
+              component="img"
+              src={logo_marca}
+              alt="Documint"
+              sx={{ height: 44 }}
+            />
+          </Box>
 
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          sx={{ width: "100%" }}
-        >
-          <Controller
-            name="password"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Contraseña"
-                type="password"
-                margin="normal"
-                error={!!errors.password}
-                helperText={errors.password?.message}
-                required
-              />
-            )}
-          />
-
-          <Controller
-            name="confirmPassword"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Confirmar Contraseña"
-                type="password"
-                margin="normal"
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword?.message}
-                required
-              />
-            )}
-          />
-
-          <Button
-            type="submit"
-            fullWidth
-            disabled={isSubmitting || loading}
+          <Paper
+            elevation={0}
             sx={{
-              mt: 3,
-              mb: 2,
-              py: 1.2,
-              textTransform: "none",
-              fontWeight: "bold",
-              background:
-                "linear-gradient(135deg, #6B73FF 0%,rgb(0, 119, 255) 100%)",
-              color: "white",
-              "&:hover": {
-                background: "linear-gradient(135deg, #5A62E5 0%, #000BCC 100%)",
-              },
+              p: { xs: 3, sm: 4 },
+              border: "1px solid",
+              borderColor: "divider",
             }}
           >
-            {loading ? "Activando..." : "Activar Cuenta"}
-          </Button>
+            <Typography variant="h5" fontWeight={700} textAlign="center" mb={0.5}>
+              Activar cuenta
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              textAlign="center"
+              mb={3}
+            >
+              Creá tu contraseña para completar la activación.
+            </Typography>
+
+            <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+              <Stack spacing={2}>
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Contraseña"
+                      type="password"
+                      error={!!errors.password}
+                      helperText={errors.password?.message}
+                      required
+                    />
+                  )}
+                />
+                <Controller
+                  name="confirmPassword"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      fullWidth
+                      label="Confirmar contraseña"
+                      type="password"
+                      error={!!errors.confirmPassword}
+                      helperText={errors.confirmPassword?.message}
+                      required
+                    />
+                  )}
+                />
+              </Stack>
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                size="large"
+                disabled={isSubmitting || loading}
+                loading={loading}
+                sx={{ mt: 3, py: 1.4 }}
+              >
+                {loading ? "Activando…" : "Activar cuenta"}
+              </Button>
+            </Box>
+
+            <Box textAlign="center" mt={3}>
+              <Link to="/login" style={{ textDecoration: "none" }}>
+                <Typography variant="body2" color="primary">
+                  ¿Ya tenés cuenta? Iniciá sesión
+                </Typography>
+              </Link>
+            </Box>
+          </Paper>
         </Box>
-        <Box
-          component="img"
-          src={logo_marca}
-          alt="Documint Logo"
-          sx={{
-            display: "block",
-            mx: "auto",
-            width: 120,
-            mt: 4,
-            mb: 2,
-          }}
-        />
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          align="center"
-          sx={{ mt: 2 }}
-        >
-          Si ya tienes una cuenta, puedes iniciar sesión{" "}
-          <Button
-            href="/login"
-            color="primary"
-            sx={{ textTransform: "none", fontWeight: "bold" }}
-          >
-            aquí
-          </Button>
-        </Typography>
-      </Paper>
-    </Container>
+      </Box>
+    </MainLayout>
   );
 };

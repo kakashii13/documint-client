@@ -11,15 +11,14 @@ export const ClientUserDashboard = () => {
 
   return (
     <MainLayout>
-      <Container>
-        <Welcome />
-
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Welcome subtitle="Gestioná tus asesores y sus links de formulario." />
         <AdvisorManager
-          onCreate={() => {
+          onCreate={() =>
             navigate(
               `/client-detail/${user?.clientId}/user/${user?.id}/create-advisor`
-            );
-          }}
+            )
+          }
           userId={user.id}
         />
       </Container>

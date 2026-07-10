@@ -1,11 +1,4 @@
-import {
-  Card,
-  Typography,
-  CardHeader,
-  CardContent,
-  CardActions,
-  Stack,
-} from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 import { DeleteButton } from "../../../components/DeleteButton";
 
 export const CardClient = ({
@@ -17,46 +10,36 @@ export const CardClient = ({
   onDelete: () => void;
   loading: boolean;
 }) => {
+  if (!client) return null;
+
   return (
-    <Card
-      elevation={0}
+    <Box
       sx={{
+        display: "flex",
+        alignItems: { xs: "flex-start", sm: "center" },
+        justifyContent: "space-between",
+        flexDirection: { xs: "column", sm: "row" },
+        gap: 2,
+        p: 3,
         mb: 4,
-        borderRadius: 3,
+        bgcolor: "background.paper",
         border: "1px solid",
         borderColor: "divider",
-        backgroundColor: "background.paper",
+        borderRadius: 3,
       }}
     >
-      <CardHeader
-        title={
-          <Typography variant="h6" fontWeight="bold">
-            {client?.name || "Cliente no encontrado"}
+      <Box>
+        <Box display="flex" alignItems="center" gap={1.5} mb={0.5}>
+          <Typography variant="h6" fontWeight={700}>
+            {client.name}
           </Typography>
-        }
-        subheader={client && `ID: ${client.id}`}
-        sx={{
-          pb: 0,
-        }}
-      />
-      <CardContent sx={{ pt: 1 }}>
-        {client ? (
-          <Stack spacing={1}>
-            <Typography variant="body2" color="text.secondary">
-              <strong>Email:</strong> {client.email}
-            </Typography>
-          </Stack>
-        ) : (
-          <Typography variant="body2" color="text.secondary">
-            No se encontraron detalles del cliente.
-          </Typography>
-        )}
-      </CardContent>
-      {client && (
-        <CardActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
-          <DeleteButton onConfirm={onDelete} loading={loading} />
-        </CardActions>
-      )}
-    </Card>
+          <Chip label={`ID ${client.id}`} size="small" variant="outlined" />
+        </Box>
+        <Typography variant="body2" color="text.secondary">
+          {client.email}
+        </Typography>
+      </Box>
+      <DeleteButton onConfirm={onDelete} loading={loading} />
+    </Box>
   );
 };

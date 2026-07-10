@@ -5,11 +5,13 @@ import { useDeleteClient } from "../features/clients/hooks/useDeleteClient";
 import { CardClient } from "../features/clients/components/CardClient";
 import { MainLayout } from "../layout/MainLayout";
 import { useClientStore } from "../hooks/useClientStore";
+import { useGetClients } from "../features/clients/hooks/useGetClients";
 
 export const ClientDetail = () => {
   const { clientId } = useParams();
   const clientIdParsed = Number(clientId);
   const { handleDeleteClient, loading } = useDeleteClient(clientIdParsed);
+  useGetClients();
   const client = useClientStore((state) => state.getClientById(clientIdParsed));
 
   return (

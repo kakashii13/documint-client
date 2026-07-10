@@ -5,8 +5,6 @@ import {
   Button,
   Stack,
   Grid,
-  Card,
-  CardContent,
 } from "@mui/material";
 import LinkIcon from "@mui/icons-material/Link";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
@@ -14,6 +12,24 @@ import EmailIcon from "@mui/icons-material/Email";
 import { TopBar } from "../components/TopBar";
 import { Link as RouterLink } from "react-router-dom";
 import formTemplate from "../assets/form_template.png";
+
+const features = [
+  {
+    icon: <PeopleAltIcon sx={{ color: "primary.main", fontSize: 26 }} />,
+    title: "Gestión de usuarios y asesores",
+    desc: "Centralizá la creación, edición y seguimiento de tus usuarios y asesores de forma intuitiva.",
+  },
+  {
+    icon: <LinkIcon sx={{ color: "primary.main", fontSize: 26 }} />,
+    title: "Links únicos y seguros",
+    desc: "Generá un enlace por cada asesor para que los afiliados completen y firmen la declaración sin complicaciones.",
+  },
+  {
+    icon: <EmailIcon sx={{ color: "primary.main", fontSize: 26 }} />,
+    title: "Notificaciones automáticas",
+    desc: "Recibí las declaraciones juradas directamente en tu correo y en el del asesor correspondiente.",
+  },
+];
 
 export const Landing = () => {
   return (
@@ -23,89 +39,68 @@ export const Landing = () => {
       {/* Hero */}
       <Box
         sx={{
-          flexGrow: 1,
-          background: {
-            xs: "linear-gradient(180deg, #f5f7fa 0%, #fff 100%)",
-          },
-          py: { xs: 6, md: 12 },
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #1565C0 60%, #1E88E5 100%)",
+          py: { xs: 10, md: 16 },
+          color: "#fff",
         }}
       >
         <Container maxWidth="lg">
-          <Grid
-            container
-            spacing={8}
-            alignItems="center"
-            justifyContent="center"
-          >
-            {/* Copy */}
-            <Grid>
-              <Stack
-                spacing={4}
-                alignItems={{ xs: "center", md: "center" }}
-                textAlign={{ xs: "center", md: "left" }}
-              >
-                <Typography
-                  component="h1"
-                  variant="h3"
-                  fontWeight={700}
-                  textAlign="center"
-                >
-                  Gestioná usuarios, asesores y formularios en un solo lugar
-                </Typography>
-                <Typography
-                  variant="h6"
-                  color="text.secondary"
-                  textAlign="center"
-                >
-                  Documint te permite crear usuarios y asesores, generar links
-                  únicos y recibir declaraciones juradas firmadas directamente
-                  en tu correo. ¡Simplificá tu flujo de trabajo hoy mismo!
-                </Typography>
-                <Stack
-                  direction={{ xs: "column", sm: "row" }}
-                  spacing={2}
-                  justifyContent="center"
-                  maxWidth={400}
-                >
+          <Grid container spacing={8} alignItems="center">
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Stack spacing={4}>
+                <Box>
+                  <Typography
+                    component="h1"
+                    variant="h3"
+                    fontWeight={700}
+                    lineHeight={1.2}
+                    mb={2}
+                  >
+                    Gestioná declaraciones juradas de afiliados en un solo lugar
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: "rgba(255,255,255,0.75)", fontWeight: 400 }}
+                  >
+                    Documint te permite crear asesores, generar links únicos y
+                    recibir formularios firmados directamente en tu correo.
+                  </Typography>
+                </Box>
+                <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <Button
                     variant="contained"
-                    size="medium"
+                    size="large"
                     component={RouterLink}
                     to="/login"
+                    sx={{
+                      bgcolor: "#fff",
+                      color: "primary.dark",
+                      "&:hover": { bgcolor: "rgba(255,255,255,0.9)" },
+                      px: 4,
+                      py: 1.5,
+                    }}
                   >
                     Iniciar sesión
                   </Button>
-                  {/* <Button
-                    variant="outlined"
-                    size="large"
-                    component={RouterLink}
-                    to="/signup"
-                  >
-                    Crear cuenta
-                  </Button> */}
                 </Stack>
               </Stack>
             </Grid>
 
-            {/* Illustration */}
-            <Grid textAlign="center">
+            <Grid size={{ xs: 12, md: 6 }} textAlign="center">
               <Box
                 component="img"
                 src={formTemplate}
                 alt="Vista previa del formulario de declaración jurada"
                 sx={{
-                  width: { xs: "100%", sm: "80%", md: 500 },
-                  maxHeight: 700,
+                  width: { xs: "100%", sm: "85%", md: "100%" },
+                  maxHeight: 520,
                   objectFit: "cover",
-                  borderRadius: 4,
-                  boxShadow: 3,
-                  mb: 2,
-                  mx: "auto",
+                  borderRadius: 3,
+                  boxShadow: "0 24px 64px rgba(0,0,0,0.4)",
+                  border: "1px solid rgba(255,255,255,0.15)",
                 }}
               />
-              <Typography variant="subtitle1" color="text.secondary">
-                Vista previa del formulario que completarán tus afiliados
-              </Typography>
             </Grid>
           </Grid>
         </Container>
@@ -114,63 +109,120 @@ export const Landing = () => {
       {/* Features */}
       <Box sx={{ py: { xs: 8, md: 12 }, bgcolor: "background.default" }}>
         <Container maxWidth="lg">
-          <Typography variant="h4" textAlign="center" fontWeight={600} mb={6}>
-            ¿Por qué Documint?
-          </Typography>
+          <Box textAlign="center" mb={8}>
+            <Typography variant="h4" fontWeight={700} mb={1.5}>
+              ¿Por qué Documint?
+            </Typography>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ maxWidth: 520, mx: "auto" }}
+            >
+              Todo lo que necesitás para gestionar tus afiliaciones de forma
+              simple y segura.
+            </Typography>
+          </Box>
+
           <Grid container spacing={4} justifyContent="center">
-            {[
-              {
-                icon: <PeopleAltIcon fontSize="large" color="primary" />,
-                title: "Gestión de Usuarios y Asesores",
-                desc: "Centralizá la creación, edición y seguimiento de tus usuarios y asesores de forma intuitiva.",
-              },
-              {
-                icon: <LinkIcon fontSize="large" color="primary" />,
-                title: "Links únicos y seguros",
-                desc: "Generá un enlace por cada asesor para que los afiliados completen y firmen la declaración sin complicaciones.",
-              },
-              {
-                icon: <EmailIcon fontSize="large" color="primary" />,
-                title: "Notificaciones automáticas",
-                desc: "Recibí las declaraciones juradas directamente en tu correo y en el del asesor correspondiente.",
-              },
-            ].map((f, idx) => (
-              <Grid key={idx}>
-                <Card elevation={2} sx={{ height: "100%", maxWidth: "600px" }}>
-                  <CardContent>
-                    <Stack spacing={2} alignItems="flex-start">
+            {features.map((f, idx) => (
+              <Grid key={idx} size={{ xs: 12, sm: 6, md: 4 }}>
+                <Box
+                  sx={{
+                    p: 3,
+                    height: "100%",
+                    bgcolor: "background.paper",
+                    borderRadius: 3,
+                    border: "1px solid",
+                    borderColor: "divider",
+                    transition: "box-shadow 0.2s, transform 0.2s",
+                    "&:hover": {
+                      boxShadow: "0 8px 32px rgba(21,101,192,0.12)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 2,
+                      bgcolor: "primary.main",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mb: 2,
+                    }}
+                  >
+                    {/* White icon */}
+                    <Box sx={{ "& svg": { color: "#fff !important" } }}>
                       {f.icon}
-                      <Typography variant="h6" fontWeight={600}>
-                        {f.title}
-                      </Typography>
-                      <Typography color="text.secondary">{f.desc}</Typography>
-                    </Stack>
-                  </CardContent>
-                </Card>
+                    </Box>
+                  </Box>
+                  <Typography variant="h6" fontWeight={600} mb={1}>
+                    {f.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {f.desc}
+                  </Typography>
+                </Box>
               </Grid>
             ))}
           </Grid>
         </Container>
       </Box>
 
-      {/* Call to action */}
+      {/* CTA */}
       <Box
         sx={{
-          py: { xs: 8, md: 12 },
-          bgcolor: "primary.main",
-          color: "primary.contrastText",
+          py: { xs: 8, md: 10 },
+          background:
+            "linear-gradient(135deg, #0f172a 0%, #1565C0 100%)",
+          color: "#fff",
           textAlign: "center",
         }}
       >
         <Container maxWidth="sm">
-          <Typography variant="h4" fontWeight={600} gutterBottom>
-            Empezá a simplificar tus procesos hoy mismo
+          <Typography variant="h4" fontWeight={700} mb={1.5}>
+            Simplificá tus procesos hoy mismo
           </Typography>
-          <Typography variant="h6" mb={4}>
-            Solicita una cuenta y descubrí todo lo que Documint puede hacer por
+          <Typography
+            variant="body1"
+            mb={4}
+            sx={{ color: "rgba(255,255,255,0.75)" }}
+          >
+            Solicitá una cuenta y descubrí todo lo que Documint puede hacer por
             tu equipo.
           </Typography>
+          <Button
+            variant="contained"
+            size="large"
+            component={RouterLink}
+            to="/login"
+            sx={{
+              bgcolor: "#fff",
+              color: "primary.dark",
+              "&:hover": { bgcolor: "rgba(255,255,255,0.9)" },
+              px: 5,
+              py: 1.5,
+            }}
+          >
+            Comenzar
+          </Button>
         </Container>
+      </Box>
+
+      {/* Footer */}
+      <Box
+        sx={{
+          py: 3,
+          textAlign: "center",
+          bgcolor: "#0f172a",
+          borderTop: "1px solid rgba(255,255,255,0.08)",
+        }}
+      >
+        <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.4)" }}>
+          © {new Date().getFullYear()} Documint. Todos los derechos reservados.
+        </Typography>
       </Box>
     </Box>
   );
